@@ -1,0 +1,37 @@
+<div class="container">
+	<div class="jumbotron">
+	<ol class="breadcrumb">
+		<li class="active"><a href="/#/genomics/datasets">Choose Dataset</a></li>
+		<li>Upload Read Sequences</li>
+	</ol>
+	<h1>Choose Dataset</h1>
+		<p>You need to either create a new dataset or choose an existing one. This
+			dataset will serve as a logical group for your new genomic sequences.</p>
+		<form class="form-horizontal" role="form">
+			<div class="form-group">
+				<label for="newDataset" class="col-sm-3 control-label">Create New Dataset</label>
+				<div class="col-sm-5">
+					<input type="text" class="form-control" id="newDataset" ng-model="newDataset"
+						placeholder="Dataset Name">
+				</div>
+				<div class="col-sm-4">
+					<button class="btn btn-primary btn-block" ng-click="createNewDataset();">Create New Dataset</button>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="existingDataset" class="col-sm-3 control-label">Choose Existing Dataset</label>
+				<div class="col-sm-5">
+					<select class="form-control" name="dataset" ng-model="dataset"
+							ng-options="value.name for value in datasets">
+					</select>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-success btn-block" ng-click="chooseDataset();">Choose Dataset</button>
+				</div>
+				<div class="col-sm-2">
+					<button class="btn btn-danger btn-block" ng-click="deleteDataset();">Delete Dataset</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
