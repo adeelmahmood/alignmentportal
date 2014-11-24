@@ -47,10 +47,36 @@ alignmentportal
 	};
 })
 .controller('ReadsController', function($scope, $location, $resource, $upload) {
+	$scope.refGenomeFile = {};
+	$scope.sampleSeqFile = {};
 
+	//once a file is selected for upload
+	$scope.onFileSelect = function($files, name) {
+		if(name == "refGenome") {
+			$scope.refGenomeFile = $files;
+		}
+		else if(name == "sampleSeq") {
+			$scope.sampleSeqFile = $files;
+		}
+	};
+	
 	$scope.uploadSequences = function() {
-		var formData = new FormData();
-		console.log(formData);
+		//make sure both files have been specified
+		if(jQuery.isEmptyObject($scope.refGenomeFile) || jQuery.isEmptyObject($scope.sampleSeqFile)){
+			return;
+		}
+		var filesToUpload = [$scope.refGenomeFile, $scope.sampleSeqFile]
+		for(var i=0; i<filesToUpload.length; i++) {
+			$scope.upload = $upload.upload({
+		        url: '/upload', 
+		        file: filesToUpload[i], // or list of files ($files) for html5 only
+		      }).success(function(data, status, headers, config) {
+		        // file is uploaded successfully
+		        if(status == 200){
+		        	$location.path('/genomics/completed');
+		        }
+		      });
+		}
 	};
 })
 ;

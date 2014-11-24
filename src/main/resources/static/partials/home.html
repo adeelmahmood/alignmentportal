@@ -1,12 +1,39 @@
-<div class="container">
-	<div class="jumbotron">
-		<h1>
-			Alignment Portal <small>for genomic sequences</small>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id luctus magna. Nullam vel justo ullamcorper, rutrum purus dapibus, finibus leo. Vestibulum iaculis justo egestas porta placerat. Vivamus gravida sapien at nunc interdum luctus</p>
-			<p>
-				<a class="btn btn-primary btn-lg" href="/#/genomics/datasets">Process New Genomics Data</a>
-				<a class="btn btn-default btn-lg" href="">Explore Existing Genomics Data</a>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="list-group">
+				<a href="#" class="list-group-item disabled"> Datasets </a> <a href="#"
+					class="list-group-item">Create New Dataset</a> <a href="#"
+					class="list-group-item">Existing Datasets</a>
+				<a href="#" class="list-group-item disabled"> Read Sequences </a> <a href="#"
+					class="list-group-item">Upload New Sequences</a> <a href="#"
+					class="list-group-item">Explore Existing Sequences</a>
+				<a href="#" class="list-group-item disabled"> Jobs </a> <a href="#"
+					class="list-group-item">Job History</a>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="pagehead">
+				<h1>
+					Alignment Portal <small>for genomic sequences</small>
+				</h1>
+			</div>
+			<p>This portal allows you to upload genomic sequences and align them with
+			uploaded reference genomes. Once the data is aligned you can explore various aspects
+			of it and interact with the aligned data using different tools provided by this portal.
+			Below are the steps for uploading and processing a new set of genomic sequences</p>
+			<h3>Steps to submit new genomic sequences</h3>
+			<ol>
+				<li>Create a new dataset <small>A dataset is a logical group for your sequences</small></li>
+				<li>Upload reference sequences <small>fasta files for reference genome sequences</small></li>
+				<li>Upload sample sequences <small>fasta files for sample sequences</small></li>
+			</ol>
+			<p style="margin-top: 15px;">
+				<strong>Click on the below button</strong> to start the complete process of uploading
+				new sequences and aligning them<br/><br/>
+				<a class="btn btn-primary btn-lg" href="/#/genomics/datasets">Submit New Genomic Sequences</a>
+				<a class="btn btn-default btn-lg" href="/#/genomics/datasets">Check Job History</a>
 			</p>
-		</h1>
+		</div>
 	</div>
 </div>
