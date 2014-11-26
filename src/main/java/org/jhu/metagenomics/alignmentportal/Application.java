@@ -3,15 +3,22 @@ package org.jhu.metagenomics.alignmentportal;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import javax.servlet.MultipartConfigElement;
+
 import org.jhu.metagenomics.alignmentportal.utils.AppUtils;
 import org.jhu.metagenomics.alignmentportal.utils.Constants;
 import org.jhu.metagenomics.alignmentportal.utils.GenomicsUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.services.genomics.Genomics;
@@ -24,6 +31,10 @@ import com.google.common.base.Suppliers;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
+@EnableJpaRepositories
+@EnableSpringDataWebSupport
+@EnableScheduling
+@EnableAsync
 public class Application {
 
 	public static void main(String[] args) {
@@ -49,4 +60,13 @@ public class Application {
 	public GcsService gcsService() {
 		return GcsServiceFactory.createGcsService(RetryParams.getDefaultInstance());
 	}
+	
+	@Bean
+    public MultipartConfigElement multipartConfigElement() {
+		MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(Long.MAX_VALUE);
+        factory.setMaxRequestSize(Long.MAX_VALUE);
+        factory.setFileSizeThreshold("128KB");
+        return factory.createMultipartConfig();
+    }
 }
