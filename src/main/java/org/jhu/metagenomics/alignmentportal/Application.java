@@ -53,7 +53,8 @@ public class Application {
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
-		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
+		return factory.fromApiKey("AIzaSyCk0xKvEGYyEjQYZ_l_EnwIsYKc34MIrAs");
+//		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
 	}
 	
 	@Bean
