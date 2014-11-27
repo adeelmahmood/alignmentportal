@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.extensions.java6.auth.oauth2.GooglePromptReceiver;
 import com.google.api.services.genomics.Genomics;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
@@ -49,7 +50,7 @@ public class Application {
 		GenomicsFactory factory = GenomicsFactory.builder(Constants.APP_NAME)
 				.setScopes(GenomicsUtils.getScopes())
 				.setUserName("user" + GenomicsUtils.getScopes().toString())
-				.setVerificationCodeReceiver(Suppliers.ofInstance(new LocalServerReceiver()))
+				.setVerificationCodeReceiver(Suppliers.ofInstance(new GooglePromptReceiver()))
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
