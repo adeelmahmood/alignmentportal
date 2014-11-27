@@ -50,7 +50,7 @@ public class Application {
 		GenomicsFactory factory = GenomicsFactory.builder(Constants.APP_NAME)
 				.setScopes(GenomicsUtils.getScopes())
 				.setUserName("user" + GenomicsUtils.getScopes().toString())
-				.setVerificationCodeReceiver(Suppliers.ofInstance(new GooglePromptReceiver()))
+//				.setVerificationCodeReceiver(Suppliers.ofInstance(new GooglePromptReceiver()))
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
