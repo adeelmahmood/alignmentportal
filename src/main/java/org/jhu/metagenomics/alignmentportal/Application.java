@@ -54,7 +54,7 @@ public class Application {
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
-		return factory.fromApiKey("AIzaSyCk0xKvEGYyEjQYZ_l_EnwIsYKc34MIrAs");
+		return factory.fromApiKey("AIzaSyBrGFmq4gw2lxlZKL_nq435NcYkIEOnU40");
 //		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
 	}
 	
