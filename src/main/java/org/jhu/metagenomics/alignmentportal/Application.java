@@ -1,11 +1,13 @@
 package org.jhu.metagenomics.alignmentportal;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.MultipartConfigElement;
 
-import org.jhu.metagenomics.alignmentportal.utils.AppUtils;
 import org.jhu.metagenomics.alignmentportal.utils.Constants;
 import org.jhu.metagenomics.alignmentportal.utils.GenomicsUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,14 +22,11 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
-import com.google.api.client.googleapis.extensions.java6.auth.oauth2.GooglePromptReceiver;
 import com.google.api.services.genomics.Genomics;
 import com.google.appengine.tools.cloudstorage.GcsService;
 import com.google.appengine.tools.cloudstorage.GcsServiceFactory;
 import com.google.appengine.tools.cloudstorage.RetryParams;
 import com.google.cloud.genomics.utils.GenomicsFactory;
-import com.google.common.base.Suppliers;
 
 @Configuration
 @EnableAutoConfiguration
@@ -71,4 +70,9 @@ public class Application {
         factory.setFileSizeThreshold("128KB");
         return factory.createMultipartConfig();
     }
+	
+	@PostConstruct
+	public void init() throws UnknownHostException {
+		System.out.println("++++++++++" + Inet4Address.getLocalHost().getHostAddress());
+	}
 }
