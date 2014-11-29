@@ -1,11 +1,8 @@
 package org.jhu.metagenomics.alignmentportal;
 
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.MultipartConfigElement;
 
 import org.jhu.metagenomics.alignmentportal.utils.Constants;
@@ -73,9 +70,4 @@ public class Application {
         factory.setFileSizeThreshold("128KB");
         return factory.createMultipartConfig();
     }
-	
-	@PostConstruct
-	public void init() throws UnknownHostException {
-		System.out.println("++++++++++" + Inet4Address.getLocalHost().getHostAddress());
-	}
 }
