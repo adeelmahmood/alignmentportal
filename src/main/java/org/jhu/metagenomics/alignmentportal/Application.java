@@ -44,6 +44,9 @@ public class Application {
 	@Value("${client.secrets.file:classpath:client_secrets.json}")
 	private String clientSecretsFile;
 	
+	@Value("${google.api.key:}")
+	private String apiKey;
+	
 	@Bean
 	public Genomics genomics() throws IOException, GeneralSecurityException{
 		GenomicsFactory factory = GenomicsFactory.builder(Constants.APP_NAME)
@@ -53,7 +56,7 @@ public class Application {
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
-		return factory.fromApiKey("AIzaSyBrGFmq4gw2lxlZKL_nq435NcYkIEOnU40");
+		return factory.fromApiKey(apiKey);
 //		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
 	}
 	
