@@ -1,0 +1,43 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3">
+			<div class="list-group">
+				<a href="#" class="list-group-item disabled"> Datasets </a> <a href="#"
+					class="list-group-item">Create New Dataset</a> <a href="#"
+					class="list-group-item">Existing Datasets</a>
+				<a href="#" class="list-group-item disabled"> Read Sequences </a> <a href="#"
+					class="list-group-item">Upload New Sequences</a> <a href="#"
+					class="list-group-item">Explore Existing Sequences</a>
+				<a href="#" class="list-group-item disabled"> Jobs </a> <a href="#"
+					class="list-group-item">Job History</a>
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="pagehead">
+				<h1>Job History</h1>
+			</div>
+			<table class="table table-bordered">
+				<tr>
+					<th>File</th>
+					<th>Dataset</th>
+					<th>Status</th>
+					<th>Type</th>
+					<th>Uploaded</th>
+					<th>Owner</th>
+					<th>Info</th>
+				</tr>
+				<tbody>
+					<tr ng-repeat="job in jobs">
+						<td>{{getFileName(job.path)}}</td>
+						<td>{{job.dataset}}</td>
+						<td>{{job.status}}</td>
+						<td>{{job.type}}</td>
+						<td>{{job.created | date}}</td>
+						<td>{{job.owner}}</td>
+						<td>{{job.info}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
