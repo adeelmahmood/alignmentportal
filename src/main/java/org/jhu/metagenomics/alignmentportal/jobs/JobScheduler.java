@@ -53,8 +53,10 @@ public class JobScheduler {
 		}
 		// for sample files run the alignment job
 		if (sampleFilesNeedingAlignment.size() > 0) {
-			jobProcessor.processJobForFiles(sampleFilesNeedingAlignment, DecompressJob.class);
+			jobProcessor.processJobForFiles(sampleFilesNeedingAlignment, BowtieAlignmentJob.class);
 		}
+		
+		
 
 	}
 }

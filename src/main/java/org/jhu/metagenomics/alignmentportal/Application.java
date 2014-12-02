@@ -5,6 +5,7 @@ import java.security.GeneralSecurityException;
 
 import javax.servlet.MultipartConfigElement;
 
+import org.jhu.metagenomics.alignmentportal.utils.AppUtils;
 import org.jhu.metagenomics.alignmentportal.utils.Constants;
 import org.jhu.metagenomics.alignmentportal.utils.GenomicsUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,8 +54,8 @@ public class Application {
 				.setRootUrl(Constants.GENOMICS_ROOT_URL)
 				.setServicePath("/")
 				.build();
-		return factory.fromApiKey(apiKey);
-//		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
+//		return factory.fromApiKey(apiKey);
+		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
 	}
 	
 	@Bean

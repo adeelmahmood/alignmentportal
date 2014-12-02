@@ -91,10 +91,10 @@ public class SequenceFile {
 		IN_PROGRESS("In Progress"), 
 		DECOMPRESS_IN_PROGRESS("Decompression In Progress"), 
 		DECOMPRESS_COMPLETED("Decompression Completed"), 
-		BOWTIE_REFERENCE_INDEX_IN_PROGRESS("Bowtie Reference Index In Progress"), 
-		BOWTIE_REFERENCE_INDEX_COMPLETED("Bowtie Reference Index Completed"), 
-		BOWTIE_ALIGNMENT_IN_PROGRESS("Bowtie Alignment In Progress"),
-		BOWTIE_ALIGNMENT_COMPLETED("Bowtie Alignment Completed"),
+		BOWTIE_BUILDING_REFERENCE_INDEX("Building Reference Index"), 
+		BOWTIE_REFERENCE_INDEX_COMPLETED("Reference Index Completed"), 
+		BOWTIE_ALIGNMENT_IN_PROGRESS("Alignment In Progress"),
+		BOWTIE_ALIGNMENT_COMPLETED("Alignment Completed"),
 		FAILED("Failed");
 
 		private String status;

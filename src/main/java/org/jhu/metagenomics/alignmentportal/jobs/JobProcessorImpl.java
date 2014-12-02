@@ -19,8 +19,8 @@ public class JobProcessorImpl implements JobProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessorImpl.class);
 	
-	private final SequenceFileRepository repository;
 	private final ApplicationContext context;
+	private final SequenceFileRepository repository;
 
 	@Autowired
 	public JobProcessorImpl(SequenceFileRepository repository, ApplicationContext context) {
@@ -39,12 +39,13 @@ public class JobProcessorImpl implements JobProcessor {
 				// set job as owner of this file
 				file.setOwner(jobBean.getName());
 				repository.saveAndFlush(file);
-
+			}
+			for (SequenceFile file : files) {
 				try {
 					// process the file
 					context.getBean(job).process(file);
 					try {
-						Thread.sleep(30000);
+						Thread.sleep(5000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
