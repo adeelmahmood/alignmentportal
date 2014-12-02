@@ -44,7 +44,10 @@ public class BowtieIndexBuilderJob implements Job {
 
 		// reference index build command
 		List<String> commands = Arrays.asList(CMD, file.getPath(), FilenameUtils.concat(indexesDir, REF));
-		AppUtils.executeCommands(commands, bowtiePath);
+		int status = AppUtils.executeCommands(commands, bowtiePath);
+		if(status != 0) {
+			throw new JobProcessingFailedException("reference index build command failed with return status " + status);
+		}
 	}
 
 	@Override

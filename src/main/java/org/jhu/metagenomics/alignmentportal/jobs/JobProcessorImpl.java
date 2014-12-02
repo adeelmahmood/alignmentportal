@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class JobProcessorImpl implements JobProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(JobProcessorImpl.class);
-	
+
 	private final ApplicationContext context;
 	private final SequenceFileRepository repository;
 
@@ -45,22 +45,22 @@ public class JobProcessorImpl implements JobProcessor {
 					// process the file
 					context.getBean(job).process(file);
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(10000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					// set completed status
+					file.setOwner("");
+					file.setStatus(SequenceFileStatus.fromStatus(jobBean.getCompletedStatus()));
+					repository.save(file);
+					log.debug("completed job [" + jobBean.getName() + "] on file " + file.toStringMin());
 				} catch (JobProcessingFailedException e) {
 					// set failed status
 					file.setOwner("");
 					file.setStatus(SequenceFileStatus.FAILED);
 					file.setInfo(e.getMessage());
-					repository.saveAndFlush(file);
+					repository.save(file);
 				}
-				// set completed status
-				file.setOwner("");
-				file.setStatus(SequenceFileStatus.fromStatus(jobBean.getCompletedStatus()));
-				repository.saveAndFlush(file);
-				log.debug("completed job [" + jobBean.getName() + "] on file " + file.toStringMin());
 			}
 		} catch (BeansException e) {
 			log.error("error in getting job bean", e);

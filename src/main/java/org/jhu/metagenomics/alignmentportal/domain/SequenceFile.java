@@ -24,6 +24,8 @@ public class SequenceFile {
 	private String owner;
 	private String info;
 
+	private Date created = DateTime.now().toDate();
+
 	@Override
 	public String toString() {
 		return "SequenceFile [id=" + id + ", dataset=" + dataset + ", path=" + path + ", identifier=" + identifier
@@ -72,8 +74,6 @@ public class SequenceFile {
 		this.owner = owner;
 	}
 
-	private Date created = DateTime.now().toDate();
-
 	public Date getCreated() {
 		return created;
 	}
@@ -83,7 +83,7 @@ public class SequenceFile {
 	}
 
 	public static enum SequenceFileType {
-		REFERENCE, SAMPLE, UNKNOWN
+		REFERENCE, SAMPLE, UNKNOWN, ALIGNED, BAM, SORTED_BAM, VARIANTS
 	}
 
 	public static enum SequenceFileStatus {
@@ -95,7 +95,13 @@ public class SequenceFile {
 		BOWTIE_REFERENCE_INDEX_COMPLETED("Reference Index Completed"), 
 		BOWTIE_ALIGNMENT_IN_PROGRESS("Alignment In Progress"),
 		BOWTIE_ALIGNMENT_COMPLETED("Alignment Completed"),
-		FAILED("Failed");
+		SAMTOOLS_SAM_TO_BAM_IN_PROGRESS("SAM to BAM In Progress"),
+		SAMTOOLS_SAM_TO_BAM_COMPELTED("SAM to BAM Completed"),
+		SAMTOOLS_SORT_BAM_IN_PROGRESS("Sort BAM In Progress"),
+		SAMTOOLS_SORT_BAM_COMPLETED("Sort BAM Completed"),
+		VARIANTS_FILE_IN_PROGRESS("Variants File In Progress"),
+		VARIANTS_FILE_COMPLETED("Variants File Completed"),
+		FAILED("Failed"), READY("Ready");
 
 		private String status;
 

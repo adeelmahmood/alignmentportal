@@ -8,10 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SequenceFileRepository extends JpaRepository<SequenceFile, Long> {
 
+	List<SequenceFile> findByDatasetOrderByCreatedDesc(String dataset);
+	
 	List<SequenceFile> findByStatus(SequenceFileStatus status);
 
 	List<SequenceFile> findByStatusAndType(SequenceFileStatus status, SequenceFileType type);
 
 	SequenceFile findByDatasetAndStatusAndType(String dataset, SequenceFileStatus status, SequenceFileType type);
+	
+//	List<String> getDatasetDistinctByDatasetOrderByCreatedDesc();
 
 }

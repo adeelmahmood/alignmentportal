@@ -2,12 +2,26 @@ alignmentportal
 .controller('HomeController', function($scope, $location, $resource, $routeParams) {
 	$scope.datasetId = $routeParams.datasetId;
 })
-.controller('HistoryController', function($scope, $location, $resource, $routeParams) {
+.controller('HistoryController', function($scope, $location, $resource, $routeParams, $interval) {
+	//retrieve distinct dataset
+	$scope.datasetsList = $resource('/jobs/datasets', {isArray: true});
+	$scope.refreshDatasets = function() {
+		$scope.datasetsList.query(function(data) {
+			$scope.datasets = data;
+		});
+	};
+	
 	//retrieve jobs listing
-	$scope.jobsList = $resource('/jobs', {isArray:false});
-	$scope.jobsList.query(function(data){
-		$scope.jobs = data;
-	});
+//	$scope.jobsList = $resource('/jobs', {isArray:false});
+//	$scope.refreshJobsList = function(){
+//		$scope.jobsList.query(function(data){
+//			$scope.jobs = data;
+//		});
+//	};
+	
+	
+//	$scope.refreshJobsList();
+//	$interval($scope.refreshJobsList, 500);
 	
 	$scope.getFileName = function(filepath) {
 		return filepath.substring(filepath.lastIndexOf("\\")+1);

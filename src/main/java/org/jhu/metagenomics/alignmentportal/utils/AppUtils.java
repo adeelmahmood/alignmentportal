@@ -31,7 +31,13 @@ public class AppUtils {
 	}
 
 	public static int executeCommands(List<String> commands, String workingDirectory) {
-		log.debug("Executing commands -> " + Arrays.toString(commands.toArray()));
+		return executeCommands(commands, workingDirectory, false, null);
+	}
+	
+	public static int executeCommands(List<String> commands, String workingDirectory, boolean captureStdout,
+			String stdoutFile) {
+		log.debug("Executing commands -> " + Arrays.toString(commands.toArray()) + ", working directory "
+				+ workingDirectory);
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		pb.directory(new File(workingDirectory));
 		pb.redirectErrorStream(true);
@@ -40,13 +46,18 @@ public class AppUtils {
 		// create sub process to control
 		Process p = null;
 		try {
+			if (captureStdout) {
+				pb.redirectOutput(new File(stdoutFile));
+			}
 			p = pb.start();
+
 			// get IO streams from process to capture output
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 				log.debug(line);
 			}
+
 		} catch (IOException e) {
 			log.error("error in executing commands", e);
 		} finally {

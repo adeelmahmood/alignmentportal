@@ -1,21 +1,16 @@
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-3">
-			<div class="list-group">
-				<a href="#" class="list-group-item disabled"> Datasets </a> <a href="#"
-					class="list-group-item">Create New Dataset</a> <a href="#"
-					class="list-group-item">Existing Datasets</a>
-				<a href="#" class="list-group-item disabled"> Read Sequences </a> <a href="#"
-					class="list-group-item">Upload New Sequences</a> <a href="#"
-					class="list-group-item">Explore Existing Sequences</a>
-				<a href="#" class="list-group-item disabled"> Jobs </a> <a href="#"
-					class="list-group-item">Job History</a>
-			</div>
-		</div>
-		<div class="col-md-9">
+		<div class="col-md-12">
 			<div class="pagehead">
-				<h1>Job History</h1>
+				<h1>Local Jobs History (By Datasets)</h1>
 			</div>
+			<ul class="nav nav-pills nav-stacked">
+				<li ng-repeat="dataset in datasets">
+					<a href="#">{{dataset.id}}</a>
+				</li>
+			</ul>
+			
+			<!-- 
 			<table class="table table-bordered">
 				<tr>
 					<th>File</th>
@@ -37,7 +32,7 @@
 						<td>{{job.info}}</td>
 					</tr>
 				</tbody>
-			</table>
+			</table> -->
 		</div>
 	</div>
 </div>

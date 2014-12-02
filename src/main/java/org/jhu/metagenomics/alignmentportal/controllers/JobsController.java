@@ -5,11 +5,8 @@ import java.util.List;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -23,8 +20,14 @@ public class JobsController {
 		this.repository = repository;
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
-	public List<SequenceFile> list(@PageableDefault(direction = Sort.Direction.DESC, sort = "created") Pageable page) {
-		return repository.findAll(page).getContent();
+	@RequestMapping("/datasets")
+	public List<String> distinctDatasets() {
+//		return repository.getDatasetDistinctByDatasetOrderByCreatedDesc();
+		return null;
+	}
+	
+	@RequestMapping("/{dataset}")
+	public List<SequenceFile> list(@PathVariable String dataset) {
+		return repository.findByDatasetOrderByCreatedDesc(dataset);
 	}
 }

@@ -22,7 +22,7 @@ public class BowtieAlignmentJob implements Job {
 
 	private static final Logger log = LoggerFactory.getLogger(BowtieAlignmentJob.class);
 
-	private final static String CMD = "./bowtie2";
+	public final static String CMD = "./bowtie2";
 
 	@Value("${bowtie.path}")
 	private String bowtiePath;
@@ -44,29 +44,30 @@ public class BowtieAlignmentJob implements Job {
 		// get the related reference file
 		SequenceFile reference = repository.findByDatasetAndStatusAndType(file.getDataset(),
 				SequenceFileStatus.BOWTIE_REFERENCE_INDEX_COMPLETED, SequenceFileType.REFERENCE);
-		log.debug("0");
-		log.debug("0.5 " + reference);
-		log.debug("1 " + reference.getPath());
-		log.debug("2 " + new File(reference.getPath()));
-		log.debug("3 " + new File(reference.getPath()).getParent());
-		
+
 		// get reference file parent directory
 		String referenceParentDir = new File(reference.getPath()).getParent();
-		log.debug("refeece parent dir is " + referenceParentDir);
 		// get name of reference base
-		String referenceIndexDir = referenceParentDir + "/" + indexDir + "/" + BowtieIndexBuilderJob.REF;
-		log.debug("index " + referenceIndexDir);
-		log.debug("2");
-		
+		String referenceIndexDir = FilenameUtils.normalize(referenceParentDir + "/" + indexDir + "/"
+				+ BowtieIndexBuilderJob.REF);
+
 		// figure out name
 		String alignedFile = FilenameUtils.concat(new File(file.getPath()).getParent(), "aligned.sam");
-		log.debug("3");
-		
+
 		// alignment command
 		List<String> commands = Arrays.asList(CMD, "-x", referenceIndexDir, "-U", file.getPath(), "-S", alignedFile);
-		log.debug("4");
-		AppUtils.executeCommands(commands, bowtiePath);
-		log.debug("5");
+		int status = AppUtils.executeCommands(commands, bowtiePath);
+		if(status != 0) {
+			throw new JobProcessingFailedException("reference index build command failed with return status " + status);
+		}
+
+		//create a new sequence file for the aligned file
+		SequenceFile af = SequenceFile.copy(file);
+		af.setPath(alignedFile);
+		af.setType(SequenceFileType.ALIGNED);
+		af.setStatus(SequenceFileStatus.NEW);
+		af.setOwner("");
+		repository.save(af);
 	}
 
 	@Override

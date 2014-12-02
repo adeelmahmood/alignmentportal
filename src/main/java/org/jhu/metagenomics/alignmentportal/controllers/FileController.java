@@ -2,10 +2,13 @@ package org.jhu.metagenomics.alignmentportal.controllers;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.h2.util.IOUtils;
@@ -26,19 +29,28 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/upload")
-public class UploadController {
+public class FileController {
 
-	private static final Logger log = LoggerFactory.getLogger(UploadController.class);
+	private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
 	private final SequenceFileRepository repository;
 
 	@Autowired
-	public UploadController(SequenceFileRepository repository) {
+	public FileController(SequenceFileRepository repository) {
 		this.repository = repository;
 	}
 
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(value = "/download", method = RequestMethod.POST)
+	public void download(@RequestParam("file") String file, HttpServletResponse response) throws IOException {
+		// get the file as stream
+		InputStream is = new FileInputStream(file);
+		// copy to response stream
+		IOUtils.copy(is, response.getOutputStream());
+		response.flushBuffer();
+		is.close();
+	}
+
+	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public ResponseEntity<?> upload(@RequestParam("file") MultipartFile file, @RequestParam String dataset,
 			@RequestParam String fileType) throws IOException {
 		// figure out upload path based on given params
@@ -60,10 +72,10 @@ public class UploadController {
 			try {
 				InputStream is = file.getInputStream();
 				File uploadFile = new File(fileName);
-//				byte[] bytes = file.getBytes();
+				// byte[] bytes = file.getBytes();
 				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(uploadFile));
 				IOUtils.copy(is, stream);
-//				stream.write(bytes);
+				// stream.write(bytes);
 				stream.close();
 				is.close();
 				log.debug("Successfully uploaded " + file.getOriginalFilename() + " into " + uploadFile.getPath());
@@ -81,14 +93,14 @@ public class UploadController {
 		SequenceFile seqFile = new SequenceFile();
 		seqFile.setDataset(dataset);
 		seqFile.setPath(file.getAbsolutePath());
-		seqFile.setStatus(SequenceFileStatus.NEW);
+		seqFile.setStatus(SequenceFileStatus.READY);
 		seqFile.setType("refGenome".equals(fileType) ? SequenceFileType.REFERENCE
 				: fileType.equals("sampleSeq") ? SequenceFileType.SAMPLE : SequenceFileType.UNKNOWN);
 		seqFile = repository.save(seqFile);
 		log.info("sequence file " + seqFile + " saved");
 		return seqFile;
 	}
-	
+
 	private String getDirPath(String dataset, String fileType) throws IOException {
 		String dir = Constants.UPLOAD_PATH + dataset + "/" + UUID.randomUUID() + "/";
 		FileUtils.forceMkdir(new File(dir));
