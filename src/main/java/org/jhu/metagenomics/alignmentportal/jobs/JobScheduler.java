@@ -23,7 +23,7 @@ public class JobScheduler {
 		this.jobProcessor = jobProcessor;
 	}
 
-	@Scheduled(fixedRate = 25000)
+	@Scheduled(fixedRate = 2000)
 	public void scheduleJobs() {
 
 		// ***********************************************
@@ -82,9 +82,19 @@ public class JobScheduler {
 		// ***********************************************
 		// get the sorted bam files and generate variants file
 		// ***********************************************
-		List<SequenceFile> sortedBamFiles = repository.findByStatusAndType(SequenceFileStatus.NEW, SequenceFileType.SORTED_BAM);
+		List<SequenceFile> sortedBamFiles = repository.findByStatusAndType(SequenceFileStatus.NEW,
+				SequenceFileType.SORTED_BAM);
 		if (sortedBamFiles.size() > 0) {
 			jobProcessor.processJobForFiles(sortedBamFiles, VariantsFileCreationJob.class);
+		}
+
+		// ***********************************************
+		// get the sorted bam files and generate variants file
+		// ***********************************************
+		List<SequenceFile> sortedBamFilesForUpload = repository.findByStatusAndType(
+				SequenceFileStatus.VARIANTS_FILE_COMPLETED, SequenceFileType.SORTED_BAM);
+		if(sortedBamFilesForUpload.size() > 0) {
+			jobProcessor.processJobForFiles(sortedBamFilesForUpload, UploadToGCSJob.class);
 		}
 	}
 }

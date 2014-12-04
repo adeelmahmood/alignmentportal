@@ -44,11 +44,6 @@ public class JobProcessorImpl implements JobProcessor {
 				try {
 					// process the file
 					context.getBean(job).process(file);
-					try {
-						Thread.sleep(10000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 					// set completed status
 					file.setOwner("");
 					file.setStatus(SequenceFileStatus.fromStatus(jobBean.getCompletedStatus()));

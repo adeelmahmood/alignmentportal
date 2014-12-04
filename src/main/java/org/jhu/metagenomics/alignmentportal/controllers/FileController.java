@@ -11,6 +11,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.h2.util.IOUtils;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,14 +42,18 @@ public class FileController {
 		this.repository = repository;
 	}
 
-	@RequestMapping(value = "/download", method = RequestMethod.POST)
-	public void download(@RequestParam("file") String file, HttpServletResponse response) throws IOException {
-		// get the file as stream
-		InputStream is = new FileInputStream(file);
-		// copy to response stream
-		IOUtils.copy(is, response.getOutputStream());
-		response.flushBuffer();
-		is.close();
+	@RequestMapping("/download")
+	public void download(@RequestParam("file") String filename, HttpServletResponse response) throws IOException {
+		File file = new File(filename);
+		// set response
+		response.setContentLength(new Long(file.length()).intValue());
+		response.setHeader("Content-Disposition", "attachment; filename=" + FilenameUtils.getName(filename));
+		try {
+			FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+		} catch (IOException e) {
+			log.error("error in downloading file", e);
+		}
+		return;
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -93,7 +99,8 @@ public class FileController {
 		SequenceFile seqFile = new SequenceFile();
 		seqFile.setDataset(dataset);
 		seqFile.setPath(file.getAbsolutePath());
-		seqFile.setStatus(SequenceFileStatus.READY);
+		seqFile.setName(file.getName());
+		seqFile.setStatus(SequenceFileStatus.NEW);
 		seqFile.setType("refGenome".equals(fileType) ? SequenceFileType.REFERENCE
 				: fileType.equals("sampleSeq") ? SequenceFileType.SAMPLE : SequenceFileType.UNKNOWN);
 		seqFile = repository.save(seqFile);

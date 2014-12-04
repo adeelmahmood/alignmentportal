@@ -15,7 +15,7 @@ alignmentportal.config(function($routeProvider) {
 			templateUrl: '/partials/genomics/done.html',
 			controller: 'HomeController'
 		})
-		.when('/history', {
+		.when('/history/:datasetId?', {
 			templateUrl: '/partials/history.html',
 			controller: 'HistoryController'
 		})

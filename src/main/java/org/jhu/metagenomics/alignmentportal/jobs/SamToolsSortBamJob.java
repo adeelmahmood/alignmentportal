@@ -3,6 +3,7 @@ package org.jhu.metagenomics.alignmentportal.jobs;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileType;
@@ -46,9 +47,11 @@ public class SamToolsSortBamJob implements Job {
 			throw new JobProcessingFailedException("samtools sort bam failed with return status " + status);
 		}
 
+		String finalPath = newPath + ".bam";
 		// create a new sequence file for the bam file
 		SequenceFile sortedBamFile = SequenceFile.copy(file);
-		sortedBamFile.setPath(newPath + ".bam");
+		sortedBamFile.setPath(finalPath);
+		sortedBamFile.setName(FilenameUtils.getName(finalPath));
 		sortedBamFile.setType(SequenceFileType.SORTED_BAM);
 		sortedBamFile.setStatus(SequenceFileStatus.NEW);
 		sortedBamFile.setOwner("");

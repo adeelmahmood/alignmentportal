@@ -5,8 +5,39 @@
 			<li>Upload Sequences</li>
 			<li class="active">Done</li>
 		</ol>
-		<p>Your files have been successfully uploaded and will be processed. 
-		Check the jobs history and looks for your files by dataset id 
-		<strong>{{datasetId}}</strong></p>
+		<h1>Upload Completed</h1>
+		<p>Your reference geonme and sample files have been uploaded</p>
+		<button class="btn btn-primary btn-lg"
+			ng-click="startAlignmentProcess()">Start Alignment Process</button>
+		<br />
+		<br />
+		<p>
+			<strong>To start this process</strong> please press this button.
+			Clicking the button will start the process and you will be redirected
+			to the <strong>jobs history</strong> page where you can monitor the
+			progress of your files.
+		</p>
+		<dl style="font-size: 15px;">
+			<dt>Reference index will be generated</dt>
+			<dd>In this step bowtie software is used to generate a reference
+				index from your uploaded reference genome file</dd>
+
+			<dt>Sample file will be aligned using generated reference index</dt>
+			<dd>In this step bowtie software is used to align the uploaded
+				sample sequence with uploaded reference genome</dd>
+
+			<dt>Aligned SAM file will be converted to BAM file</dt>
+			<dd>The default output format for bowtie aligned files is SAM.
+				In this step SAMTools are used to convert this file into to its
+				binary equivalent BAM.</dd>
+
+			<dt>BAM file will be sorted</dt>
+			<dd>In this step binay BAM file is sorted</dd>
+
+			<dt>Using the aligned sorted BAM file a variants will be
+				generated</dt>
+			<dd>In this step SAMTools and BCFTools are used to generated a
+				variants file</dd>
+		</dl>
 	</div>
 </div>

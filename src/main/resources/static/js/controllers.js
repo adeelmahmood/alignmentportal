@@ -1,33 +1,77 @@
 alignmentportal
 .controller('HomeController', function($scope, $location, $resource, $routeParams) {
 	$scope.datasetId = $routeParams.datasetId;
+
+	$scope.startAlignmentProcess = function() {
+		if($scope.datasetId) {
+			$scope.startJobQuery = $resource('/jobs/start/:dataset', {isArray:false});
+			$scope.startJob = $scope.startJobQuery.query({dataset: $scope.datasetId}, function(data) {
+				$location.path('/history/' + $scope.datasetId);				
+			});
+		}
+	};
 })
 .controller('HistoryController', function($scope, $location, $resource, $routeParams, $interval) {
-	//retrieve distinct dataset
+	$scope.datasets = [];
+	//queries for datasets and jobs
 	$scope.datasetsList = $resource('/jobs/datasets', {isArray: true});
+	$scope.datasetGet = $resource('/datasets/get/:dataset', {isArray:false});
+	$scope.jobsList = $resource('/jobs/:dataset', {isArray:false});
+	
+	//calls to fetch dataset and jobs
 	$scope.refreshDatasets = function() {
 		$scope.datasetsList.query(function(data) {
-			$scope.datasets = data;
+			$scope.datasetIds = data;
+			//for each dataset id get complete info
+			angular.forEach($scope.datasetIds, function(val) {
+				$scope.datasetGet.get({dataset: val}, function(data){ 
+					$scope.datasets.push({
+							id: data.id,
+							name: data.name,
+							lastRefresh: null,
+							jobs: {}
+						});
+					//start polling jobs
+					if($scope.datasets.length == $scope.datasetIds.length) {
+						$scope.toggleRefresh();
+					}
+				});
+			});
+		});
+	};
+	$scope.refreshDatasets();
+	
+	//calls to fetch jobs for each dataset
+	$scope.refreshJobs = function() {
+		angular.forEach($scope.datasets, function(dataset) {
+			$scope.jobsList.query({dataset:dataset.id}, function(data) {
+				dataset.jobs = data;
+				dataset.lastRefresh = new Date();
+			});
 		});
 	};
 	
-	//retrieve jobs listing
-//	$scope.jobsList = $resource('/jobs', {isArray:false});
-//	$scope.refreshJobsList = function(){
-//		$scope.jobsList.query(function(data){
-//			$scope.jobs = data;
-//		});
-//	};
+	$scope.toggleRefreshLabel = "Start Monitoring Progress";
+	$scope.toggleRefreshCls = "success";
+	$scope.toggleRefresh = function() {
+		if(angular.isDefined($scope.refreshInterval)) {
+			$interval.cancel($scope.refreshInterval);
+			$scope.refreshInterval = undefined;
+			$scope.toggleRefreshLabel = "Start Monitoring Progress";
+			$scope.toggleRefreshCls = "success";
+		}
+		else{
+			$scope.refreshInterval = $interval($scope.refreshJobs, 1000);
+			$scope.toggleRefreshLabel = "Stop Monitoring Progress";
+			$scope.toggleRefreshCls = "danger";
+		}
+	};
 	
-	
-//	$scope.refreshJobsList();
-//	$interval($scope.refreshJobsList, 500);
-	
-	$scope.getFileName = function(filepath) {
-		return filepath.substring(filepath.lastIndexOf("\\")+1);
-	};	
-	$scope.getDate = function(millis) {
-		return new Date(millis);
+	$scope.downloadCall = $resource('/download', {}, {
+		doIt: {method: 'POST', isArray: false, params: {file:'@file'}}
+	});
+	$scope.download = function(file) {
+		$scope.downloadCall.doIt({file: file.path});
 	};
 })
 .controller('DatasetsController', function($scope, $location, $resource, $routeParams) {

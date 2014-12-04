@@ -6,7 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import org.apache.commons.io.FilenameUtils;
 import org.joda.time.DateTime;
 
 @Entity
@@ -17,8 +16,8 @@ public class SequenceFile {
 	private long id;
 
 	private String dataset;
+	private String name;
 	private String path;
-	private String identifier;
 	private SequenceFileType type;
 	private SequenceFileStatus status;
 	private String owner;
@@ -28,34 +27,32 @@ public class SequenceFile {
 
 	@Override
 	public String toString() {
-		return "SequenceFile [id=" + id + ", dataset=" + dataset + ", path=" + path + ", identifier=" + identifier
-				+ ", type=" + type + ", status=" + status + ", owner=" + owner + ", info=" + info + ", created="
-				+ created + "]";
+		return "SequenceFile [id=" + id + ", dataset=" + dataset + ", path=" + path + ", type=" + type + ", status="
+				+ status + ", owner=" + owner + ", info=" + info + ", created=" + created + "]";
 	}
-	
+
 	public String toStringMin() {
-		return "SeqFile [dataset=" + dataset + ", path=" + FilenameUtils.getName(path) + ", type=" + type
-				+ ", status=" + status + "]";
+		return "SeqFile [dataset=" + dataset + ", name=" + name + ", type=" + type + ", status=" + status + "]";
 	}
 
 	public static SequenceFile copy(SequenceFile from) {
 		SequenceFile file = new SequenceFile();
 		file.setDataset(from.getDataset());
-		file.setInfo(from.getInfo());
-		file.setIdentifier(from.getIdentifier());
-		file.setOwner(from.getOwner());
+		file.setName(from.getName());
 		file.setPath(from.getPath());
 		file.setStatus(from.getStatus());
 		file.setType(from.getType());
+		file.setInfo(from.getInfo());
+		file.setOwner(from.getOwner());
 		return file;
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getName() {
+		return name;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getInfo() {
@@ -87,21 +84,14 @@ public class SequenceFile {
 	}
 
 	public static enum SequenceFileStatus {
-		NEW("New"), 
-		IN_PROGRESS("In Progress"), 
-		DECOMPRESS_IN_PROGRESS("Decompression In Progress"), 
-		DECOMPRESS_COMPLETED("Decompression Completed"), 
-		BOWTIE_BUILDING_REFERENCE_INDEX("Building Reference Index"), 
-		BOWTIE_REFERENCE_INDEX_COMPLETED("Reference Index Completed"), 
-		BOWTIE_ALIGNMENT_IN_PROGRESS("Alignment In Progress"),
-		BOWTIE_ALIGNMENT_COMPLETED("Alignment Completed"),
-		SAMTOOLS_SAM_TO_BAM_IN_PROGRESS("SAM to BAM In Progress"),
-		SAMTOOLS_SAM_TO_BAM_COMPELTED("SAM to BAM Completed"),
-		SAMTOOLS_SORT_BAM_IN_PROGRESS("Sort BAM In Progress"),
-		SAMTOOLS_SORT_BAM_COMPLETED("Sort BAM Completed"),
-		VARIANTS_FILE_IN_PROGRESS("Variants File In Progress"),
-		VARIANTS_FILE_COMPLETED("Variants File Completed"),
-		FAILED("Failed"), READY("Ready");
+		NEW("New"), IN_PROGRESS("In Progress"), DECOMPRESS_IN_PROGRESS("Decompression In Progress"), DECOMPRESS_COMPLETED(
+				"Decompression Completed"), BOWTIE_BUILDING_REFERENCE_INDEX("Building Reference Index"), BOWTIE_REFERENCE_INDEX_COMPLETED(
+				"Reference Index Completed"), BOWTIE_ALIGNMENT_IN_PROGRESS("Alignment In Progress"), BOWTIE_ALIGNMENT_COMPLETED(
+				"Alignment Completed"), SAMTOOLS_SAM_TO_BAM_IN_PROGRESS("SAM to BAM In Progress"), SAMTOOLS_SAM_TO_BAM_COMPELTED(
+				"SAM to BAM Completed"), SAMTOOLS_SORT_BAM_IN_PROGRESS("Sort BAM In Progress"), SAMTOOLS_SORT_BAM_COMPLETED(
+				"Sort BAM Completed"), VARIANTS_FILE_IN_PROGRESS("Variants File In Progress"), VARIANTS_FILE_COMPLETED(
+				"Variants File Completed"), UPLOAD_TO_GCS_IN_PROGRESS("Upload to GCS In Progress"), UPLOAD_TO_GCS_COMPLETED(
+				"Upload to GCS Completed"), FAILED("Failed"), READY("Ready");
 
 		private String status;
 

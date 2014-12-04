@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,6 +46,18 @@ public class DataSetsController {
 			log.error("error in listing datasets", e);
 		}
 		return datasets.getDatasets();
+	}
+	
+	@RequestMapping("/get/{dataset}")
+	public Dataset get(@PathVariable String dataset) {
+		log.debug("getting dataset " + dataset);
+		//get dataset
+		try {
+			return genomics.datasets().get(dataset).execute();
+		} catch (IOException e) {
+			log.error("error in getting dataset", e);
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.POST)

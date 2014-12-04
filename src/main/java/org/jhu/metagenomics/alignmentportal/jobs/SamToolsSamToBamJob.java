@@ -3,6 +3,7 @@ package org.jhu.metagenomics.alignmentportal.jobs;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFileRepository;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
@@ -38,7 +39,8 @@ public class SamToolsSamToBamJob implements Job {
 
 		// path to bam file
 		String newPath = file.getPath().replaceAll(".sam", ".bam");
-
+		log.info("original path " + file.getPath() + " changed path " + newPath);
+		
 		// sam to bam command
 		List<String> commands = Arrays.asList(CMD, "view", "-bS", file.getPath());
 		int status = AppUtils.executeCommands(commands, samtoolsPath, true, newPath);
@@ -49,6 +51,7 @@ public class SamToolsSamToBamJob implements Job {
 		// create a new sequence file for the bam file
 		SequenceFile bamFile = SequenceFile.copy(file);
 		bamFile.setPath(newPath);
+		bamFile.setName(FilenameUtils.getName(newPath));
 		bamFile.setType(SequenceFileType.BAM);
 		bamFile.setStatus(SequenceFileStatus.NEW);
 		bamFile.setOwner("");

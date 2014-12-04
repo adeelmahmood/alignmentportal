@@ -3,6 +3,7 @@ package org.jhu.metagenomics.alignmentportal.jobs;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.io.FilenameUtils;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileType;
@@ -61,6 +62,7 @@ public class VariantsFileCreationJob implements Job {
 		// create a new sequence file for the variants file
 		SequenceFile variantsFile = SequenceFile.copy(file);
 		variantsFile.setPath(newPath);
+		variantsFile.setName(FilenameUtils.getName(newPath));
 		variantsFile.setType(SequenceFileType.VARIANTS);
 		variantsFile.setStatus(SequenceFileStatus.NEW);
 		variantsFile.setOwner("");

@@ -52,7 +52,7 @@ public class BowtieAlignmentJob implements Job {
 				+ BowtieIndexBuilderJob.REF);
 
 		// figure out name
-		String alignedFile = FilenameUtils.concat(new File(file.getPath()).getParent(), "aligned.sam");
+		String alignedFile = file.getPath() + ".aligned.sam";
 
 		// alignment command
 		List<String> commands = Arrays.asList(CMD, "-x", referenceIndexDir, "-U", file.getPath(), "-S", alignedFile);
@@ -64,6 +64,7 @@ public class BowtieAlignmentJob implements Job {
 		//create a new sequence file for the aligned file
 		SequenceFile af = SequenceFile.copy(file);
 		af.setPath(alignedFile);
+		af.setName(FilenameUtils.getName(alignedFile));
 		af.setType(SequenceFileType.ALIGNED);
 		af.setStatus(SequenceFileStatus.NEW);
 		af.setOwner("");

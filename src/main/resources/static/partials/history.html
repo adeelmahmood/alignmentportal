@@ -2,37 +2,49 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="pagehead">
-				<h1>Local Jobs History (By Datasets)</h1>
+				<div class="pull-right">
+					<button ng-show="datasetIds.length>0"
+						class="btn btn-{{toggleRefreshCls}} btn-lg"
+						ng-click="toggleRefresh()">{{toggleRefreshLabel}}</button>
+				</div>
+				<h1>
+					Local Jobs History <small>By Datasets</small>
+				</h1>
 			</div>
-			<ul class="nav nav-pills nav-stacked">
-				<li ng-repeat="dataset in datasets">
-					<a href="#">{{dataset.id}}</a>
-				</li>
-			</ul>
-			
-			<!-- 
-			<table class="table table-bordered">
-				<tr>
-					<th>File</th>
-					<th>Dataset</th>
-					<th>Status</th>
-					<th>Type</th>
-					<th>Uploaded</th>
-					<th>Owner</th>
-					<th>Info</th>
-				</tr>
-				<tbody>
-					<tr ng-repeat="job in jobs">
-						<td>{{getFileName(job.path)}}</td>
-						<td>{{job.dataset}}</td>
-						<td>{{job.status}}</td>
-						<td>{{job.type}}</td>
-						<td>{{job.created | date}}</td>
-						<td>{{job.owner}}</td>
-						<td>{{job.info}}</td>
-					</tr>
-				</tbody>
-			</table> -->
+			<br />
+			<div class="panel panel-default" ng-repeat="dataset in datasets">
+				<div class="panel-heading">
+					<div class="pull-right" ng-show="dataset.lastRefresh">
+						Last Refreshed At <strong>{{dataset.lastRefresh |
+							date:'mediumTime'}}</strong>
+					</div>
+					<h3 class="panel-title">Dataset: {{dataset.name}}</h3>
+				</div>
+				<div class="panel-body">
+					<table class="table table-bordered">
+						<tr>
+							<th>File</th>
+							<th>Status</th>
+							<th>Type</th>
+							<th>Uploaded</th>
+							<th>Info</th>
+							<th></th>
+						</tr>
+						<tbody>
+							<tr ng-repeat="job in dataset.jobs">
+								<td>{{job.name}}</td>
+								<td>{{job.status}}</td>
+								<td>{{job.type}}</td>
+								<td>{{job.created | date:'short'}}</td>
+								<td>{{job.owner}}<br />{{job.info}}
+								</td>
+								<td><a class="btn btn-default btn-sm"
+									ng-href="/download?file={{job.path}}">Download</a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
