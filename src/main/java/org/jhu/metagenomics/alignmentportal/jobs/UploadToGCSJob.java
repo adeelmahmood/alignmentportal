@@ -1,59 +1,63 @@
 package org.jhu.metagenomics.alignmentportal.jobs;
 
-import java.io.FileInputStream;
-import java.nio.channels.Channels;
+import java.util.Arrays;
+import java.util.List;
 
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
+import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
+import org.jhu.metagenomics.alignmentportal.domain.SequenceFileRepository;
 import org.jhu.metagenomics.alignmentportal.exceptions.JobProcessingFailedException;
+import org.jhu.metagenomics.alignmentportal.utils.AppUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
 
-import com.google.appengine.tools.cloudstorage.GcsFileOptions;
-import com.google.appengine.tools.cloudstorage.GcsFilename;
-import com.google.appengine.tools.cloudstorage.GcsOutputChannel;
-import com.google.appengine.tools.cloudstorage.GcsService;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 @Component
 public class UploadToGCSJob implements Job {
 
 	private static final Logger log = LoggerFactory.getLogger(UploadToGCSJob.class);
 
-	@Value("${gcs.bucket}")
+	private final static String CMD = "./gsutil";
+
+	@Value("${gsutil.path}")
+	private String gsutilPath;
+
+	@Value("${google.genomics.storage.bucket}")
 	private String bucket;
 
-	private final GcsService service;
+	private final SequenceFileRepository repository;
 
 	@Autowired
-	public UploadToGCSJob(GcsService service) {
-		this.service = service;
+	public UploadToGCSJob(SequenceFileRepository repository) {
+		this.repository = repository;
 	}
 
 	@Override
 	public void process(SequenceFile file) throws JobProcessingFailedException {
 		log.debug("uploading to google cloud storage file " + file.getName() + " to bucket " + bucket);
 
-		try {
-			log.info("1");
-			// create a fcs filename
-			GcsFilename filename = new GcsFilename(bucket, file.getName());
-			log.info("2 " + service);
-			log.info("2.1 " + filename);
-			log.info("2.2 " + GcsFileOptions.getDefaultInstance());
-			// get the writable channel
-			GcsOutputChannel outputChannel = service.createOrReplace(filename, GcsFileOptions.getDefaultInstance());
-			log.info("3");
-			// write to stream
-			log.info("4");
-			FileCopyUtils.copy(new FileInputStream(file.getPath()), Channels.newOutputStream(outputChannel));
-			log.info("5");
-		} catch (Exception e) {
-			log.error("error in uploading to gcs", e);
-			throw new JobProcessingFailedException("error in uploading to gcs", e);
+		String cloudPath = "gs://" + bucket + "/" + file.getDataset() + "/" + file.getType() + "/"
+				+ DateTime.now().getMillis() + "-" + file.getName();
+
+		// upload to GCS storage command
+		List<String> commands = Arrays.asList(CMD, "cp", file.getPath(), cloudPath);
+		int status = AppUtils.executeCommands(commands, gsutilPath);
+		if (status != 0) {
+			throw new JobProcessingFailedException("google cloud storage upload failed with return status " + status);
 		}
+
+		file.setInfo("File uploaded to Google Cloud Storage");
+
+		// create a new seq file for cloud file
+		SequenceFile cloudFile = SequenceFile.copy(file);
+		cloudFile.setPath(cloudPath);
+		cloudFile.setInfo("");
+		cloudFile.setStatus(SequenceFileStatus.NEW_IN_GOOGLE_CLOUD);
+		repository.save(cloudFile);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class JobScheduler {
 		this.jobProcessor = jobProcessor;
 	}
 
-	@Scheduled(fixedRate = 2000)
+	@Scheduled(fixedRate = 5000)
 	public void scheduleJobs() {
 
 		// ***********************************************
@@ -89,12 +89,26 @@ public class JobScheduler {
 		}
 
 		// ***********************************************
-		// get the sorted bam files and generate variants file
+		// get the sorted bam files and variants file and upload them to GCS
 		// ***********************************************
 		List<SequenceFile> sortedBamFilesForUpload = repository.findByStatusAndType(
 				SequenceFileStatus.VARIANTS_FILE_COMPLETED, SequenceFileType.SORTED_BAM);
-		if(sortedBamFilesForUpload.size() > 0) {
+		if (sortedBamFilesForUpload.size() > 0) {
 			jobProcessor.processJobForFiles(sortedBamFilesForUpload, UploadToGCSJob.class);
+		}
+		List<SequenceFile> variantFilesForUpload = repository.findByStatusAndType(SequenceFileStatus.NEW,
+				SequenceFileType.VARIANTS);
+		if (variantFilesForUpload.size() > 0) {
+			jobProcessor.processJobForFiles(variantFilesForUpload, UploadToGCSJob.class);
+		}
+
+		// ***********************************************
+		// get the uploaded to GCS files and import the reads file
+		// ***********************************************
+		List<SequenceFile> importReadsFiles = repository.findByStatusAndType(SequenceFileStatus.NEW_IN_GOOGLE_CLOUD,
+				SequenceFileType.SORTED_BAM);
+		if (importReadsFiles.size() > 0) {
+			jobProcessor.processJobForFiles(importReadsFiles, ImportReadsJob.class);
 		}
 	}
 }

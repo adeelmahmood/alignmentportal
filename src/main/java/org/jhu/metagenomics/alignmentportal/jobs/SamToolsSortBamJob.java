@@ -46,6 +46,8 @@ public class SamToolsSortBamJob implements Job {
 		if (status != 0) {
 			throw new JobProcessingFailedException("samtools sort bam failed with return status " + status);
 		}
+		
+		file.setInfo("Bam file sorted");
 
 		String finalPath = newPath + ".bam";
 		// create a new sequence file for the bam file
@@ -54,7 +56,6 @@ public class SamToolsSortBamJob implements Job {
 		sortedBamFile.setName(FilenameUtils.getName(finalPath));
 		sortedBamFile.setType(SequenceFileType.SORTED_BAM);
 		sortedBamFile.setStatus(SequenceFileStatus.NEW);
-		sortedBamFile.setOwner("");
 		repository.save(sortedBamFile);
 	}
 

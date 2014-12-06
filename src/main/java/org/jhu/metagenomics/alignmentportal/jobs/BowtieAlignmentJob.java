@@ -60,6 +60,8 @@ public class BowtieAlignmentJob implements Job {
 		if(status != 0) {
 			throw new JobProcessingFailedException("reference index build command failed with return status " + status);
 		}
+		
+		file.setInfo("Alignment with reference completed");
 
 		//create a new sequence file for the aligned file
 		SequenceFile af = SequenceFile.copy(file);
@@ -67,7 +69,6 @@ public class BowtieAlignmentJob implements Job {
 		af.setName(FilenameUtils.getName(alignedFile));
 		af.setType(SequenceFileType.ALIGNED);
 		af.setStatus(SequenceFileStatus.NEW);
-		af.setOwner("");
 		repository.save(af);
 	}
 

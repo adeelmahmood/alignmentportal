@@ -47,6 +47,8 @@ public class SamToolsSamToBamJob implements Job {
 		if (status != 0) {
 			throw new JobProcessingFailedException("samtools convert sam to bam failed with return status " + status);
 		}
+		
+		file.setInfo("SAM to BAM conversion completed");
 
 		// create a new sequence file for the bam file
 		SequenceFile bamFile = SequenceFile.copy(file);
@@ -54,7 +56,6 @@ public class SamToolsSamToBamJob implements Job {
 		bamFile.setName(FilenameUtils.getName(newPath));
 		bamFile.setType(SequenceFileType.BAM);
 		bamFile.setStatus(SequenceFileStatus.NEW);
-		bamFile.setOwner("");
 		repository.save(bamFile);
 	}
 

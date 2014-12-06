@@ -48,6 +48,8 @@ public class BowtieIndexBuilderJob implements Job {
 		if(status != 0) {
 			throw new JobProcessingFailedException("reference index build command failed with return status " + status);
 		}
+		
+		file.setInfo("Reference index generated");
 	}
 
 	@Override

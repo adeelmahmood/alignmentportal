@@ -1,0 +1,42 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pagehead">
+				<div class="pull-right">
+					<button ng-show="readGroupSetData.previousPageToken" ng-click="first()" class="btn btn-default">
+						<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+						Back to First Page
+					</button>
+					<button ng-show="readGroupSetData.nextPageToken" ng-click="next()" class="btn btn-default">
+						Next Set of Reads <span class="glyphicon glyphicon-chevron-right"
+							aria-hidden="true"></span>
+					</button>
+				</div>
+				<h1>
+					Reads <small>for {{readGroupSetData.readGroupSetName}}</small>
+				</h1>
+			</div>
+			<table class="table table-bordered">
+				<tr>
+					<th class="col-md-2">Reference Name</th>
+					<th class="col-md-2">Fragment Name</th>
+					<th class="col-md-1">Strand</th>
+					<th class="col-md-1">Mapping Quality</th>
+					<th class="col-md-6">Aligned Sequence + Aligned Quality
+						</button>
+					</th>
+				</tr>
+				<tbody>
+					<tr ng-repeat="read in readGroupSetData.reads">
+						<td>{{read.alignment.position.referenceName}}</td>
+						<td>{{read.fragmentName}}</td>
+						<td>{{getStrand(read.alignment.position.reverseStrand)}}</td>
+						<td>{{read.alignment.mappingQuality}}</td>
+						<td><span ng-bind-html="renderSequence(read) | unsafe"></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>

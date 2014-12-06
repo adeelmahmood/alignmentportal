@@ -35,7 +35,6 @@ public class DataSetsController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Dataset> list() {
-		log.debug("listing dataset for project " + projectNumber);
 		ListDatasetsResponse datasets = null;
 		try {
 			// list all datasets
@@ -50,7 +49,6 @@ public class DataSetsController {
 	
 	@RequestMapping("/get/{dataset}")
 	public Dataset get(@PathVariable String dataset) {
-		log.debug("getting dataset " + dataset);
 		//get dataset
 		try {
 			return genomics.datasets().get(dataset).execute();

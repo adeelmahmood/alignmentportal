@@ -36,10 +36,14 @@
 								<td>{{job.status}}</td>
 								<td>{{job.type}}</td>
 								<td>{{job.created | date:'short'}}</td>
-								<td>{{job.owner}}<br />{{job.info}}
-								</td>
-								<td><a class="btn btn-default btn-sm"
-									ng-href="/download?file={{job.path}}">Download</a></td>
+								<td>{{job.info}} <img src="" /></td>
+								<td><a ng-hide="isInCloud(job.path) || isInProgress(job)"
+									class="btn btn-default btn-sm"
+									ng-href="/download?file={{job.path}}">Download</a> <a
+									ng-show="isInCloud(job.path) && !isInProgress(job)"
+									class="btn btn-success btn-sm disabled" disabled="true" href>In
+										Cloud</a> <span class="label label-primary"
+									ng-show="isInProgress(job)">In Progress</span></td>
 							</tr>
 						</tbody>
 					</table>

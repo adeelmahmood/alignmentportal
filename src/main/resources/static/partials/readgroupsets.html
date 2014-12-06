@@ -1,0 +1,30 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pagehead">
+				<h1>
+					Read Group Sets <small>By Datasets</small>
+				</h1>
+			</div>
+			<table class="table table-bordered">
+				<tr>	
+					<th>Dataset</th>
+					<th>File</th>
+					<th>Generate Command</th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tbody>
+					<tr ng-repeat="readGroupSet in readGroupSets">
+						<td>{{readGroupSet.datasetName}}</td>
+						<td>{{readGroupSet.filename}}</td>
+						<td>{{readGroupSet.readGroups[0].programs[0].commandLine}}</td>
+						<td><button class="btn btn-primary" ng-click="viewReads(readGroupSet)">View Reads</button></td>
+						<td><button class="btn btn-danger" ng-click="deleteSet(readGroupSet)">Delete</button>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>

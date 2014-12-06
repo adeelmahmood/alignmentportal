@@ -37,7 +37,7 @@ public class JobProcessorImpl implements JobProcessor {
 				// set in progress status
 				file.setStatus(SequenceFileStatus.fromStatus(jobBean.getInProgressStatus()));
 				// set job as owner of this file
-				file.setOwner(jobBean.getName());
+				file.setInfo(jobBean.getName() +" processing ...");
 				repository.saveAndFlush(file);
 			}
 			for (SequenceFile file : files) {
@@ -45,13 +45,11 @@ public class JobProcessorImpl implements JobProcessor {
 					// process the file
 					context.getBean(job).process(file);
 					// set completed status
-					file.setOwner("");
 					file.setStatus(SequenceFileStatus.fromStatus(jobBean.getCompletedStatus()));
 					repository.save(file);
 					log.debug("completed job [" + jobBean.getName() + "] on file " + file.toStringMin());
 				} catch (JobProcessingFailedException e) {
 					// set failed status
-					file.setOwner("");
 					file.setStatus(SequenceFileStatus.FAILED);
 					file.setInfo(e.getMessage());
 					repository.save(file);

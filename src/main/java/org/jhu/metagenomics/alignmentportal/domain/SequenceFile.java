@@ -20,7 +20,6 @@ public class SequenceFile {
 	private String path;
 	private SequenceFileType type;
 	private SequenceFileStatus status;
-	private String owner;
 	private String info;
 
 	private Date created = DateTime.now().toDate();
@@ -28,7 +27,7 @@ public class SequenceFile {
 	@Override
 	public String toString() {
 		return "SequenceFile [id=" + id + ", dataset=" + dataset + ", path=" + path + ", type=" + type + ", status="
-				+ status + ", owner=" + owner + ", info=" + info + ", created=" + created + "]";
+				+ status + ", info=" + info + ", created=" + created + "]";
 	}
 
 	public String toStringMin() {
@@ -43,7 +42,6 @@ public class SequenceFile {
 		file.setStatus(from.getStatus());
 		file.setType(from.getType());
 		file.setInfo(from.getInfo());
-		file.setOwner(from.getOwner());
 		return file;
 	}
 
@@ -61,14 +59,6 @@ public class SequenceFile {
 
 	public void setInfo(String info) {
 		this.info = info;
-	}
-
-	public String getOwner() {
-		return owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
 	}
 
 	public Date getCreated() {
@@ -91,7 +81,8 @@ public class SequenceFile {
 				"SAM to BAM Completed"), SAMTOOLS_SORT_BAM_IN_PROGRESS("Sort BAM In Progress"), SAMTOOLS_SORT_BAM_COMPLETED(
 				"Sort BAM Completed"), VARIANTS_FILE_IN_PROGRESS("Variants File In Progress"), VARIANTS_FILE_COMPLETED(
 				"Variants File Completed"), UPLOAD_TO_GCS_IN_PROGRESS("Upload to GCS In Progress"), UPLOAD_TO_GCS_COMPLETED(
-				"Upload to GCS Completed"), FAILED("Failed"), READY("Ready");
+				"Upload to GCS Completed"), FAILED("Failed"), READY("Ready"), NEW_IN_GOOGLE_CLOUD("New In Google Cloud"),
+				IMPORT_READS_IN_PROGRESS("Import Reads In Progress"), IMPORT_READS_COMPLETED("Import Reads Completed");
 
 		private String status;
 

@@ -73,6 +73,13 @@ alignmentportal
 	$scope.download = function(file) {
 		$scope.downloadCall.doIt({file: file.path});
 	};
+	
+	$scope.isInCloud = function(path) {
+		return path.match(/gs/) != null;
+	};
+	$scope.isInProgress = function(file) {
+		return file.info.match(/processing\s/) != null;
+	}
 })
 .controller('DatasetsController', function($scope, $location, $resource, $routeParams) {
 	$scope.dataset = {};
@@ -201,5 +208,75 @@ alignmentportal
 	$scope.uploadSequences = function() {
 		$scope.uploader.uploadAll();
 	}
+})
+.controller('ReadGroupSetsController', function($scope, $location, $resource, $routeParams) {
+	$scope.datasetQuery = $resource('/datasets/get/:dataset', {isArray:false});
+	$scope.readGroupSetsList = $resource('/readgroupsets', {isArray:false});
+	$scope.readGroupSetsList.query(function(data) {
+		$scope.readGroupSets = data;
+		//do another query to data dataset detailed information
+		angular.forEach($scope.readGroupSets, function(readGroupSet) {
+			$scope.datasetQuery.get({dataset:readGroupSet.datasetId}, function(data) {
+				readGroupSet.datasetName = data.name;
+			});
+		});
+	});
+	
+	$scope.viewReads = function(set) {
+		$location.path('/reads/' + set.id);		
+	};
+	
+	$scope.deleteQuery = $resource('/readgroupsets/delete/:readGroupSetId', {isArray:false});
+	$scope.deleteSet = function(set) {
+		if(confirm("Are you sure?")) {
+			$scope.deleteQuery.get({readGroupSetId: set.id}, function(data) {
+				
+			});
+		}
+	};
+})
+.controller('ViewReadsController', function($scope, $location, $resource, $routeParams) {
+	$scope.readGroupSetData = {};
+	$scope.readsList = $resource('/reads/list/:readGroupSetId', {isArray:false});
+	$scope.refreshReads = function() {
+		$scope.readsList.get({
+					readGroupSetId: $routeParams.readGroupSetId,
+					nextPageToken: $scope.readGroupSetData.nextPageToken
+				}, function(data) { $scope.readGroupSetData = data; });	
+	};
+	$scope.refreshReads();
+	
+	$scope.getStrand = function(reverse) {
+		return reverse ? "-" : "+";
+	};
+	
+	$scope.renderSequence = function(read) {
+		var str = "", seqs = "", scores = "";
+		for(var i=0; i<read.alignedSequence.length; i++) {
+			if(i%30==0 && i>0){
+				str += "<div class='text-primary'>" + seqs + "</div><div class='text-muted'>" + scores + "</div>";
+				seqs = "";
+				scores = "";
+			}
+			seqs += read.alignedSequence[i] + " ";
+			scores += read.alignedQuality.length > i ? read.alignedQuality[i] + " " : "-1 ";
+		}
+		str += "<div class='text-primary'>" + seqs + "</div><div class='text-muted'>" + scores + "</div>";
+		return str;
+	};
+	
+	$scope.next = function() {
+		$scope.refreshReads();
+	};
+	$scope.first = function() {
+		$scope.readGroupSetData.nextPageToken = null;
+		$scope.readGroupSetData.previousPageToken = null;
+		$scope.refreshReads();
+	};
+}).
+filter('unsafe', function($sce) {
+	return function(val) {
+		return $sce.trustAsHtml(val);
+	};
 })
 ;

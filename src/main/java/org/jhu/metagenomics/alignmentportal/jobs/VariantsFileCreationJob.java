@@ -58,6 +58,8 @@ public class VariantsFileCreationJob implements Job {
 		if (status != 0) {
 			throw new JobProcessingFailedException("generation of variants file failed with return status " + status);
 		}
+		
+		file.setInfo("Variants file generated");
 
 		// create a new sequence file for the variants file
 		SequenceFile variantsFile = SequenceFile.copy(file);
@@ -65,7 +67,6 @@ public class VariantsFileCreationJob implements Job {
 		variantsFile.setName(FilenameUtils.getName(newPath));
 		variantsFile.setType(SequenceFileType.VARIANTS);
 		variantsFile.setStatus(SequenceFileStatus.NEW);
-		variantsFile.setOwner("");
 		repository.save(variantsFile);
 	}
 
