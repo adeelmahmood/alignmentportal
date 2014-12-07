@@ -61,7 +61,7 @@ alignmentportal
 			$scope.toggleRefreshCls = "success";
 		}
 		else{
-			$scope.refreshInterval = $interval($scope.refreshJobs, 1000);
+			$scope.refreshInterval = $interval($scope.refreshJobs, 2500);
 			$scope.toggleRefreshLabel = "Stop Monitoring Progress";
 			$scope.toggleRefreshCls = "danger";
 		}
@@ -235,14 +235,44 @@ alignmentportal
 		}
 	};
 })
+.controller('VariantSetsController', function($scope, $location, $resource, $routeParams) {
+	$scope.datasetQuery = $resource('/datasets/get/:dataset', {isArray:false});
+	$scope.variantSetsList = $resource('/variantsets', {isArray:false});
+	$scope.variantSetsList.query(function(data) {
+		$scope.variantSets = data;
+		//do another query to data dataset detailed information
+		angular.forEach($scope.variantSets, function(variantSet) {
+			$scope.datasetQuery.get({dataset:variantSet.datasetId}, function(data) {
+				variantSet.datasetName = data.name;
+			});
+		});
+	});
+	
+	$scope.viewVariants = function(set) {
+		$location.path('/variants/' + set.id);		
+	};
+	
+	$scope.deleteQuery = $resource('/variantsets/delete/:variantSetId', {isArray:false});
+	$scope.deleteSet = function(set) {
+		if(confirm("Are you sure?")) {
+			$scope.deleteQuery.get({variantSetId: set.id}, function(data) {
+				$scope.$apply();
+			});
+		}
+	};
+})
 .controller('ViewReadsController', function($scope, $location, $resource, $routeParams) {
 	$scope.readGroupSetData = {};
 	$scope.readsList = $resource('/reads/list/:readGroupSetId', {isArray:false});
 	$scope.refreshReads = function() {
 		$scope.readsList.get({
 					readGroupSetId: $routeParams.readGroupSetId,
+					start: $scope.startPosition,
+					end: $scope.endPosition,
+					referenceName: $scope.referenceName,
 					nextPageToken: $scope.readGroupSetData.nextPageToken
-				}, function(data) { $scope.readGroupSetData = data; });	
+				}, function(data) { $scope.readGroupSetData = data; },
+				function(err){ alert(err.data.error + "\n" + err.data.message); });	
 	};
 	$scope.refreshReads();
 	
@@ -264,6 +294,13 @@ alignmentportal
 		str += "<div class='text-primary'>" + seqs + "</div><div class='text-muted'>" + scores + "</div>";
 		return str;
 	};
+	$scope.renderTags = function(read) {
+		var str = "";
+		for(tag in read.info) {
+			str += "<div class='text-muted'>" + tag + " : " + read.info[tag].join(" ") + "</div>";
+		}
+		return str;
+	};
 	
 	$scope.next = function() {
 		$scope.refreshReads();
@@ -273,6 +310,56 @@ alignmentportal
 		$scope.readGroupSetData.previousPageToken = null;
 		$scope.refreshReads();
 	};
+	$scope.search = function() {
+		$scope.readGroupSetData.nextPageToken = "";
+		$scope.refreshReads();
+	};
+	$scope.clear = function() {
+		$scope.startPosition = "";
+		$scope.endPosition = "";
+		$scope.referenceName = "";
+		$scope.readGroupSetData.nextPageToken = "";
+		$scope.refreshReads();
+	};
+	
+	$('[data-toggle="tooltip"]').tooltip();
+})
+.controller('ViewVariantsController', function($scope, $location, $resource, $routeParams) {
+	$scope.variantSetData = {};
+	$scope.variantsList = $resource('/variants/list/:variantSetId', {isArray:false});
+	$scope.refreshReads = function() {
+		$scope.variantsList.get({
+					variantSetId: $routeParams.variantSetId,
+					start: $scope.startPosition,
+					end: $scope.endPosition,
+//					referenceName: $scope.referenceName,
+					nextPageToken: $scope.variantSetData.nextPageToken
+				}, function(data) { $scope.variantSetData = data; },
+				function(err){ alert(err.data.error + "\n" + err.data.message); });	
+	};
+	$scope.refreshReads();
+	
+	$scope.next = function() {
+		$scope.refreshReads();
+	};
+	$scope.first = function() {
+		$scope.variantSetData.nextPageToken = null;
+		$scope.variantSetData.previousPageToken = null;
+		$scope.refreshReads();
+	};
+	$scope.search = function() {
+		$scope.variantSetData.nextPageToken = "";
+		$scope.refreshReads();
+	};
+	$scope.clear = function() {
+		$scope.startPosition = "";
+		$scope.endPosition = "";
+		$scope.referenceName = "";
+		$scope.variantSetData.nextPageToken = "";
+		$scope.refreshReads();
+	};
+	
+	$('[data-toggle="tooltip"]').tooltip();
 }).
 filter('unsafe', function($sce) {
 	return function(val) {

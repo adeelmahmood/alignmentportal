@@ -32,5 +32,10 @@ public class MiscTests {
 		out.writeObject(content);
 		out.close();
 	}
+	
+	@Test
+	public void generateVariantsFileTests() {
+		
+	}
 
 }

@@ -103,12 +103,31 @@ public class JobScheduler {
 		}
 
 		// ***********************************************
-		// get the uploaded to GCS files and import the reads file
+		// get the uploaded to GCS sorted bam files and import the reads file
 		// ***********************************************
 		List<SequenceFile> importReadsFiles = repository.findByStatusAndType(SequenceFileStatus.NEW_IN_GOOGLE_CLOUD,
 				SequenceFileType.SORTED_BAM);
 		if (importReadsFiles.size() > 0) {
 			jobProcessor.processJobForFiles(importReadsFiles, ImportReadsJob.class);
 		}
+
+		// ***********************************************
+		// get the uploaded to GCS variants files and import the variants file
+		// ***********************************************
+		List<SequenceFile> importVariantsFiles = repository.findByStatusAndType(SequenceFileStatus.NEW_IN_GOOGLE_CLOUD,
+				SequenceFileType.VARIANTS);
+		if (importVariantsFiles.size() > 0) {
+			jobProcessor.processJobForFiles(importVariantsFiles, ImportVariantsJob.class);
+		}
+
+		// ***********************************************
+		// get the imported variants file and export it to big query
+		// ***********************************************
+		List<SequenceFile> importedVariantsFiles = repository.findByStatusAndType(
+				SequenceFileStatus.IMPORT_VARIANTS_COMPLETED, SequenceFileType.VARIANTS);
+		if (importedVariantsFiles.size() > 0) {
+			jobProcessor.processJobForFiles(importedVariantsFiles, ExportToBigQueryJob.class);
+		}
+
 	}
 }

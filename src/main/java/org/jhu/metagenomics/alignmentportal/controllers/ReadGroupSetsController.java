@@ -54,4 +54,9 @@ public class ReadGroupSetsController {
 	public void delete(@PathVariable String readGroupSetId) throws IOException {
 		genomics.readgroupsets().delete(readGroupSetId).execute();
 	}
+	
+	@RequestMapping("/get/{readGroupSetId}")
+	public void get(@PathVariable String readGroupSetId) throws IOException {
+		genomics.readgroupsets().get(readGroupSetId).execute();
+	}
 }

@@ -23,9 +23,17 @@ alignmentportal.config(function($routeProvider) {
 			templateUrl: '/partials/readgroupsets.html',
 			controller: 'ReadGroupSetsController'
 		})
+		.when('/variantsets', {
+			templateUrl: '/partials/variantsets.html',
+			controller: 'VariantSetsController'
+		})
 		.when('/reads/:readGroupSetId', {
 			templateUrl: '/partials/viewreads.html',
 			controller: 'ViewReadsController'
+		})
+		.when('/variants/:variantSetId', {
+			templateUrl: '/partials/viewvariants.html',
+			controller: 'ViewVariantsController'
 		})
 		.otherwise({
 				templateUrl: '/partials/home.html',

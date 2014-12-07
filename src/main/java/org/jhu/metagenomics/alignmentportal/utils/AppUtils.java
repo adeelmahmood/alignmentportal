@@ -33,14 +33,16 @@ public class AppUtils {
 	public static int executeCommands(List<String> commands, String workingDirectory) {
 		return executeCommands(commands, workingDirectory, false, null);
 	}
-	
+
 	public static int executeCommands(List<String> commands, String workingDirectory, boolean captureStdout,
 			String stdoutFile) {
 		log.debug("Executing commands -> " + Arrays.toString(commands.toArray()) + ", working directory "
 				+ workingDirectory);
 		ProcessBuilder pb = new ProcessBuilder(commands);
 		pb.directory(new File(workingDirectory));
-		pb.redirectErrorStream(true);
+		if (!captureStdout) {
+			pb.redirectErrorStream(true);
+		}
 		int retStatus = 1;
 
 		// create sub process to control

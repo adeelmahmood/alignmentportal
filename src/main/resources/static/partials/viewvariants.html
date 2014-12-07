@@ -1,0 +1,85 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="pagehead">
+				<div class="pull-right">
+					<a href="/#variantsets" class="btn btn-default">Back To Variant Sets</a>
+				</div>
+				<h1>
+					Variants <small>for {{variantSetData.variantSetReferenceName}}</small>
+				</h1>
+
+			</div>
+			<nav class="navbar navbar-default" role="navigation">
+				<div>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input type="text" class="form-control" data-toggle="tooltip"
+								data-placement="bottom"
+								title="Search for alignments within a start and end position range"
+								placeholder="Start Position" ng-model="startPosition">
+						</div>
+						<div class="form-group">
+							<input type="text" class="form-control" data-toggle="tooltip"
+								data-placement="bottom"
+								title="Search for alignments within a start and end position range"
+								placeholder="End Position" ng-model="endPosition">
+						</div>
+						<div class="form-group">
+							<input type="text" class="form-control"
+								placeholder="Reference Name" ng-model="referenceName"
+								data-toggle="tooltip" data-placement="bottom"
+								title="Search for alignments for a given reference name e.g. chr1 or gi|9626243|ref|NC_001416.1|">
+						</div>
+						<button type="button" class="btn btn-default" ng-click="search()"
+							ng-disabled="!startPosition || !endPosition || !referenceName">
+							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							Search Alignments
+						</button>
+						<button type="button" class="btn btn-default" ng-click="clear()"
+							ng-disabled="!startPosition && !endPosition && !referenceName">
+							Clear</button>
+					</form>
+					<form class="navbar-form navbar-right">
+						<button ng-show="readGroupSetData.previousPageToken"
+							ng-click="first()" class="btn btn-default">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							Back to First Page
+						</button>
+						<button ng-show="readGroupSetData.nextPageToken" ng-click="next()"
+							class="btn btn-default">
+							Next Set of Reads <span class="glyphicon glyphicon-chevron-right"
+								aria-hidden="true"></span>
+						</button>
+						&nbsp;
+					</form>
+				</div>
+			</nav>
+			<table class="table table-bordered">
+				<tr>
+					<th>Reference Name</th>
+					<th>Fragment</th>
+					<th>Strand</th>
+					<th>Position</th>
+					<th>Length</th>
+					<th>Quality</th>
+					<th>Aligned Sequence & Quality Score</th>
+					<th>Tags</th>
+				</tr>
+				<tbody>
+					<tr ng-repeat="read in readGroupSetData.reads">
+						<td>{{read.alignment.position.referenceName}}</td>
+						<td>{{read.fragmentName}}</td>
+						<td>{{getStrand(read.alignment.position.reverseStrand)}}</td>
+						<td>{{read.alignment.position.position}}</td>
+						<td>{{read.alignment.cigar[0].operationLength}}</td>
+						<td>{{read.alignment.mappingQuality}}</td>
+						<td><span ng-bind-html="renderSequence(read) | unsafe"></span></td>
+						<td><span ng-bind-html="renderTags(read) | unsafe"></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+</div>
