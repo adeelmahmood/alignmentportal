@@ -53,7 +53,7 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
-	@Value("${client.secrets.file:classpath:client_secrets.json}")
+	@Value("${client.secrets.file:client_secrets.json}")
 	private String clientSecretsFile;
 
 	@Value("${google.api.key:}")
