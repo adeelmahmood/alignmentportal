@@ -27,10 +27,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.googleapis.extensions.java6.auth.oauth2.GooglePromptReceiver;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -39,6 +38,7 @@ import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.storage.Storage;
 import com.google.cloud.genomics.utils.GenomicsFactory;
+import com.google.common.base.Suppliers;
 
 @Configuration
 @EnableAutoConfiguration
@@ -63,8 +63,7 @@ public class Application {
 	public Genomics genomics() throws IOException, GeneralSecurityException {
 		GenomicsFactory factory = GenomicsFactory.builder(Constants.APP_NAME).setScopes(GenomicsUtils.getScopes())
 				.setUserName("user" + GenomicsUtils.getScopes().toString())
-				// .setVerificationCodeReceiver(Suppliers.ofInstance(new
-				// GooglePromptReceiver()))
+				 .setVerificationCodeReceiver(Suppliers.ofInstance(new GooglePromptReceiver()))
 				.setRootUrl(Constants.GENOMICS_ROOT_URL).setServicePath("/").build();
 		// return factory.fromApiKey(apiKey);
 		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
@@ -123,6 +122,6 @@ public class Application {
 		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport(), jacksonFactory(),
 				clientSecrets, scopes).setDataStoreFactory(dataStoreFactory()).build();
 		// Authorize.
-		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user" + scopes.toString());
+		return new AuthorizationCodeInstalledApp(flow, new GooglePromptReceiver()).authorize("user" + scopes.toString());
 	}
 }
