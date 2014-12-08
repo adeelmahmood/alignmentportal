@@ -78,8 +78,28 @@ alignmentportal
 		return path.match(/gs/) != null;
 	};
 	$scope.isInProgress = function(file) {
-		return file.info.match(/processing\s/) != null;
-	}
+		return file.info && file.info.match(/processing\s/) != null;
+	};
+	$scope.isInBigquery = function(file) {
+		return file.info && file.info.match(/\{apds\:/) != null;
+	};
+	
+	$scope.renderJobInfo = function(info) {
+		var str = "";
+		var matches = info.match(/([^\{].*)\{([^\:].*):([^\}].*)\}/);
+		if(matches != null && matches.length > 0) {
+			var orig = matches[1];
+			var key = matches[2];
+			var val = matches[3];
+			if(key == "readgroupsets") {
+				str += "<a href='/#/reads/" + val + "' class='btn btn-primary btn-sm'>Explore Reads</a>";
+			}
+			else if(key == "apds") {
+				str += "<a href class='btn btn-primary btn-sm'>Explore Variants</a>";
+			}
+		}
+		return str ? str : info;
+	};
 })
 .controller('DatasetsController', function($scope, $location, $resource, $routeParams) {
 	$scope.dataset = {};
@@ -209,7 +229,7 @@ alignmentportal
 		$scope.uploader.uploadAll();
 	}
 })
-.controller('ReadGroupSetsController', function($scope, $location, $resource, $routeParams) {
+.controller('ReadGroupSetsController', function($scope, $location, $resource, $route, $routeParams) {
 	$scope.datasetQuery = $resource('/datasets/get/:dataset', {isArray:false});
 	$scope.readGroupSetsList = $resource('/readgroupsets', {isArray:false});
 	$scope.readGroupSetsList.query(function(data) {
@@ -230,12 +250,12 @@ alignmentportal
 	$scope.deleteSet = function(set) {
 		if(confirm("Are you sure?")) {
 			$scope.deleteQuery.get({readGroupSetId: set.id}, function(data) {
-				
+				$route.reload();
 			});
 		}
 	};
 })
-.controller('VariantSetsController', function($scope, $location, $resource, $routeParams) {
+.controller('VariantSetsController', function($scope, $location, $resource, $route, $routeParams) {
 	$scope.datasetQuery = $resource('/datasets/get/:dataset', {isArray:false});
 	$scope.variantSetsList = $resource('/variantsets', {isArray:false});
 	$scope.variantSetsList.query(function(data) {
@@ -256,7 +276,7 @@ alignmentportal
 	$scope.deleteSet = function(set) {
 		if(confirm("Are you sure?")) {
 			$scope.deleteQuery.get({variantSetId: set.id}, function(data) {
-				$scope.$apply();
+				$route.reload();
 			});
 		}
 	};

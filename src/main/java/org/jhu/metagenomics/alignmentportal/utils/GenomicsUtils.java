@@ -90,7 +90,8 @@ public class GenomicsUtils {
 	}
 
 	public static String getJobStatus(com.google.api.services.genomics.model.Job job) {
-		return job.getDetailedStatus() != null ? job.getDetailedStatus() : "Import Reads: " + job.getStatus();
+		return (job.getDetailedStatus() != null && !job.getDetailedStatus().isEmpty()) ? job.getDetailedStatus()
+				: "Job status " + job.getStatus();
 	}
 
 }

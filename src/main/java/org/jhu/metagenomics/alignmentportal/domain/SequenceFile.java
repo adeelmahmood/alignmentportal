@@ -24,16 +24,6 @@ public class SequenceFile {
 	@Column(length = 4000)
 	private String info;
 
-	private String remoteJobId;
-
-	public String getRemoteJobId() {
-		return remoteJobId;
-	}
-
-	public void setRemoteJobId(String remoteJobId) {
-		this.remoteJobId = remoteJobId;
-	}
-
 	private Date created = DateTime.now().toDate();
 
 	@Override
@@ -96,7 +86,8 @@ public class SequenceFile {
 				"Upload to GCS Completed"), FAILED("Failed"), READY("Ready"), NEW_IN_GOOGLE_CLOUD("New In Google Cloud"), IMPORT_READS_IN_PROGRESS(
 				"Import Reads In Progress"), IMPORT_READS_JOB_SUBMITTED("Import Reads Job Submitted"), IMPORT_READS_COMPLETED(
 				"Import Reads Completed"), IMPORT_VARIANTS_IN_PROGRESS("Import Variants In Progress"), IMPORT_VARIANTS_COMPLETED(
-				"Import Variants Completed");
+				"Import Variants Completed"), EXPORT_TO_BIG_QUERY_IN_PROGRESS("Export to Big Query In Progress"), EXPORT_TO_BIG_QUERY_COMPLETED(
+				"Export to Big Query Completed");
 
 		private String status;
 
@@ -163,4 +154,5 @@ public class SequenceFile {
 	public void setStatus(SequenceFileStatus status) {
 		this.status = status;
 	}
+
 }

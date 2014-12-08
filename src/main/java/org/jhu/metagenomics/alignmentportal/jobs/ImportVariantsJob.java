@@ -66,7 +66,7 @@ public class ImportVariantsJob implements Job {
 
 			// capture imported variant set information
 			VariantSet variantSet = genomics.variantsets().get(file.getDataset()).execute();
-			log.debug("imported variant set " + variantSet.toPrettyString());
+			log.debug("imported variant set " + variantSet.getId());
 			file.setInfo("Imported as variant set. {variantsset:" + variantSet.getId() + "}");
 			repository.save(file);
 		} catch (IOException e) {

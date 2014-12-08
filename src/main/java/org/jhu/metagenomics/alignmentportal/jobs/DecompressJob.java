@@ -1,6 +1,5 @@
 package org.jhu.metagenomics.alignmentportal.jobs;
 
-import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -23,15 +22,16 @@ public class DecompressJob implements Job {
 	public void process(SequenceFile file) throws JobProcessingFailedException {
 		String path = file.getPath();
 		String ext = FilenameUtils.getExtension(path);
-		if (path.endsWith(".gz")) {
+		if ("gz".equals(ext)) {
 			try {
 				byte[] buffer = new byte[1024];
-				String newPath = path.replace(ext, "");
+				String newPath = path.replace("." + ext, "");
 				log.debug("decompressing file " + file);
 				GZIPInputStream is = new GZIPInputStream(new FileInputStream(file.getPath()));
-				BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(newPath));
-				while (is.read(buffer) > 0) {
-					os.write(buffer);
+				FileOutputStream os = new FileOutputStream(newPath);
+				int len;
+				while ((len = is.read(buffer)) > 0) {
+					os.write(buffer, 0, len);
 				}
 				os.close();
 				is.close();
