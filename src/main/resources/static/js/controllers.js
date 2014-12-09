@@ -94,6 +94,9 @@ alignmentportal
 			if(key == "readgroupsets") {
 				str += "<a href='/#/reads/" + val + "' class='btn btn-primary btn-sm'>Explore Reads</a>";
 			}
+			else if(key == "variantsset") {
+				str += "<a href='/#/variants/" + val + "' class='btn btn-primary btn-sm'>Explore Variants</a>";
+			}
 			else if(key == "apds") {
 				str += "<a href='/#/variants/" + val.split("_")[0] + "' class='btn btn-primary btn-sm'>Explore Variants</a>";
 			}

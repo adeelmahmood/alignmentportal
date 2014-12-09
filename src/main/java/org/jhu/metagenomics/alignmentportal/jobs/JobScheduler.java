@@ -8,11 +8,15 @@ import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStat
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileType;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JobScheduler {
+
+	@Value("${import.to.bigquery.enabled:false}")
+	private boolean importToBigQuery;
 
 	private final SequenceFileRepository repository;
 	private final JobProcessor jobProcessor;
@@ -105,10 +109,11 @@ public class JobScheduler {
 		// ***********************************************
 		// get the imported variants file and export it to big query
 		// ***********************************************
-		List<SequenceFile> importedVariantsFiles = repository.findByStatusAndType(
-				SequenceFileStatus.IMPORT_VARIANTS_COMPLETED, SequenceFileType.VARIANTS);
-		processFiles(importedVariantsFiles, ExportToBigQueryJob.class);
-
+		if (importToBigQuery) {
+			List<SequenceFile> importedVariantsFiles = repository.findByStatusAndType(
+					SequenceFileStatus.IMPORT_VARIANTS_COMPLETED, SequenceFileType.VARIANTS);
+			processFiles(importedVariantsFiles, ExportToBigQueryJob.class);
+		}
 	}
 
 	private void processFiles(List<SequenceFile> files, Class<? extends Job> job) {
