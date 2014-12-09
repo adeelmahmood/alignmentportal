@@ -57,7 +57,7 @@ public class AppUtils {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-//				log.debug(line);
+				log.debug(line);
 			}
 
 		} catch (IOException e) {

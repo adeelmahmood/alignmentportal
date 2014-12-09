@@ -29,6 +29,9 @@ public class VariantsController {
 	@Value("${google.genomics.project.number}")
 	private long projectNumber;
 
+	@Value("${google.bigquery.dataset}")
+	private String bigqueryDataset;
+	
 	private final Genomics genomics;
 
 	@Autowired
@@ -49,6 +52,7 @@ public class VariantsController {
 		VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
 		data.put("variantSetId", variantSet.getId());
 		data.put("variantSetReferenceBounds", variantSet.getReferenceBounds());
+		data.put("bigquerytable", bigqueryDataset + "." + variantSet.getId());
 		
 		//use the default reference name
 		if(referenceName == null || referenceName.isEmpty()) {

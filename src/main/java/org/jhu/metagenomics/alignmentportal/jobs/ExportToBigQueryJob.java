@@ -42,7 +42,7 @@ public class ExportToBigQueryJob implements Job {
 
 		String variantSetId = file.getDataset();
 		String bqDataset = dataset;
-		String bgTable = variantSetId + "_" + DateTime.now().getMillis();
+		String bgTable = variantSetId;
 		try {
 			log.debug("exporting variant set " + variantSetId + " to big query " + bqDataset + ":" + bgTable);
 			ExportVariantSetRequest req = new ExportVariantSetRequest().setProjectNumber(projectNumber)
