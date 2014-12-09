@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.genomics.model.ExportVariantSetRequest;
-import com.google.appengine.repackaged.org.joda.time.DateTime;
 
 @Component
 public class ExportToBigQueryJob implements Job {
