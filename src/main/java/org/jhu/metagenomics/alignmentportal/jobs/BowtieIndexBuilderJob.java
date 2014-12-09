@@ -20,7 +20,7 @@ public class BowtieIndexBuilderJob implements Job {
 
 	private static final Logger log = LoggerFactory.getLogger(BowtieIndexBuilderJob.class);
 	
-	public final static String CMD = "./bowtie2-build";
+	public final static String CMD = "bowtie2-build";
 	public final static String REF = "ref";
 
 	@Value("${bowtie.path}")
