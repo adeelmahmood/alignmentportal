@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/alignmentportal-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -Dbowtie.path=/apps/libs/bowtie2-2.2.4 -Dsamtools.path=/apps/libs/samtools-1.1 -Dbcftools.path=/apps/libs/bcftools-1.1 -jar target/alignmentportal-0.0.1-SNAPSHOT.jar
