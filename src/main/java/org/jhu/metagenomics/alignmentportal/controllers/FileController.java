@@ -17,10 +17,10 @@ import org.jhu.metagenomics.alignmentportal.domain.SequenceFile;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileStatus;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFile.SequenceFileType;
 import org.jhu.metagenomics.alignmentportal.domain.SequenceFileRepository;
-import org.jhu.metagenomics.alignmentportal.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
@@ -35,6 +35,9 @@ public class FileController {
 
 	private static final Logger log = LoggerFactory.getLogger(FileController.class);
 
+	@Value("${file.upload.path}")
+	private String uploadPath;
+	
 	private final SequenceFileRepository repository;
 
 	@Autowired
@@ -109,7 +112,7 @@ public class FileController {
 	}
 
 	private String getDirPath(String dataset, String fileType) throws IOException {
-		String dir = Constants.UPLOAD_PATH + dataset + "/" + UUID.randomUUID() + "/";
+		String dir = uploadPath + dataset + "/" + UUID.randomUUID() + "/";
 		FileUtils.forceMkdir(new File(dir));
 		return dir;
 	}

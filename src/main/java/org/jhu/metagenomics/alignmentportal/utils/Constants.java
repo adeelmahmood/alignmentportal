@@ -6,8 +6,6 @@ public final class Constants {
 	
 	public static final String GENOMICS_ROOT_URL = "https://www.googleapis.com/genomics/v1beta2";
 
-	public static final String UPLOAD_PATH = "upload/";
-	
 	private Constants() {
 		
 	}
