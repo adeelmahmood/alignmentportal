@@ -1,5 +1,0 @@
-[fai_load] build FASTA index.
-[E::hts_open] fail to open file '.bam'
-[mpileup] failed to open .bam: No such file or directory
-[vcf.c:1224 vcf_hdr_read] Could not read the header
-Failed to open: -
