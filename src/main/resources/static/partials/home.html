@@ -8,45 +8,75 @@
 			</div>
 		</div>
 	</div>
-			<p class="lead">This portal allows you to upload genomic sequences and align
-				them with uploaded reference genomes. Once the data is aligned you
-				can explore various aspects of it and interact with the aligned data
-				using different tools provided by this portal</p>
-	<div class="lead">
-		<strong>Datasets</strong> A logical group for your sequence reads<br/>
-		<strong>Read Group Sets</strong> Corresponse to a single sequence file<br/>
-		<strong>Reads</strong> Sequence reads within a file/readgroupset
-	</div>
+	<p class="lead">
+		This portal allows you to upload <strong><span
+			class='text-muted'>genomic sample sequences</span></strong> and <strong><span
+			class='text-muted'>reference genomes sequences</span></strong>. The sample
+		sequences are aligned with reference genome using <span
+			class='text-muted'><strong>bowtie</strong></span> and <span
+			class='text-muted'><strong>samtools</strong></span>. Variants files
+		are generated using <span class='text-muted'><strong>bcftools</strong></span>.
+		Aligned reads and variants files are uploaded to <span
+			class='text-muted'><strong>google cloud storage</strong></span> and
+		then imported into <span class='text-muted'><strong>google
+				genomics platform</strong></span>.
+	</p>
 	<div class="row">
-		<div class="col-md-6" style="height: 160px;">
+		<div class="col-md-6">
 			<a class="btn btn-primary btn-block" href="/#/genomics/datasets"><span
 				class="glyphicon glyphicon-upload" aria-hidden="true"></span> Submit
 				New Genomic Sequences</a>
-			<p style="margin-top: 15px;">Click this button to submit new
-				genomic sequences. This process will take you through the steps of
-				uploading reference genome and sample sequences</p>
+			<p style="margin-top: 15px;">
+				Click this button to submit new genomic sequences. This process will
+				take you through the steps of uploading reference genome and sample
+				sequences. These files will then go through several processing steps
+				including generation of alignment files and variant files. Once the
+				files have been uploaded you can monitor their progress by going to
+				the <Strong>Check Job History</Strong> link.
+			</p>
 		</div>
-		<div class="col-md-6" style="height: 160px;">
+		<div class="col-md-6">
 			<a class="btn btn-default btn-block" href="/#/history"><span
 				class="glyphicon glyphicon-list" aria-hidden="true"></span> Check
 				Job History</a>
-			<p style="margin-top: 15px;">Click this button to check job
-				history of previously uploaded sequences. This shows local files
-				history</p>
+			<p style="margin-top: 15px;">
+				Click this button to check job history of jobs being processed. You
+				will be able to see the status of different files and additional
+				information about them. Once the process completes you will see the
+				links to <strong>View Reads</strong> and <strong>View
+					Variants</strong> for you files.
+			</p>
 		</div>
-		<div class="col-md-6" style="height: 160px;">
+	</div>
+	<div class="row">
+		<div class="col-md-6">
 			<a class="btn btn-default btn-block" href="/#/readgroupsets"><span
 				class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
 				Explore Reads</a>
-			<p style="margin-top: 15px;">Explore sequence reads by browing <Strong>read group sets</Strong>.
-			For each read group set you can view all the sequence reads within it.</p>
+			<p style="margin-top: 15px;">Once the aligned files have been
+				imported into google genomics platform. You can then view the
+				sequence reads in a formatted fashion. You can search for aligned
+				sequences and paginate through returned results and be able to
+				review detailed information about aligned sequences.</p>
 		</div>
-		<div class="col-md-6" style="height: 160px;">
+		<div class="col-md-6">
 			<a class="btn btn-default btn-block" href="/#/variantsets"><span
 				class="glyphicon glyphicon-asterisk" aria-hidden="true"></span>
 				Explore Variants</a>
-			<p style="margin-top: 15px;">Explore previously uploaded seqence
-				variants</p>
+			<p style="margin-top: 15px;">Once the variant files have been
+				imported into google genomics platform. You can then view the
+				variants for your sequence files. You can search for variants and
+				paginate through returned results and be able to review details
+				information about variants.</p>
 		</div>
 	</div>
+	<hr />
+	<p class="text-center">
+		This portal uses <a href='' class='hyperlink'>bowtie</a>, <a href=''
+			class='hyperlink'>samtools</a>, <a href='' class='hyperlink'>bcftools</a>,
+		<a href='' class='hyperlink'>google cloud storage</a>, <a href='' class='hyperlink'>google genomics api</a>
+		and <a href='' class='hyperlink'>google big query</a>.<br /> Complete source
+		code for this application is available at
+		<a href="https://github.com/adeelmahmood/alignmentportal">https://github.com/adeelmahmood/alignmentportal</a>
+	</p>
 </div>

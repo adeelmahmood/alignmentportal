@@ -4,7 +4,8 @@
 			<div class="pagehead">
 				<div class="pull-right">
 					<a href="/#readgroupsets" class="btn btn-default">Back To Read
-						Group Sets</a>
+						Group Sets</a> <a href="http://samtools.github.io/hts-specs/SAMv1.pdf"
+						target="_blank" class="btn btn-success">Format Specifications</a>
 				</div>
 				<h1>
 					Reads <small>for {{readGroupSetData.readGroupSetName}}</small>
@@ -45,7 +46,7 @@
 						<button ng-show="readGroupSetData.previousPageToken"
 							ng-click="first()" class="btn btn-default">
 							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							Back to First Page
+							First Page
 						</button>
 						<button ng-show="readGroupSetData.nextPageToken" ng-click="next()"
 							class="btn btn-default">

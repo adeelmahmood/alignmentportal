@@ -48,7 +48,16 @@ public class GenomicsUtils {
 		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
 		return scopes;
 	}
-
+	
+	public static Set<String> getAllScopes() {
+		Set<String> scopes = new HashSet<String>();
+		scopes.add(BigqueryScopes.BIGQUERY);
+		scopes.add(StorageScopes.DEVSTORAGE_FULL_CONTROL);
+		scopes.add(StorageScopes.DEVSTORAGE_READ_ONLY);
+		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
+		return scopes;
+	}
+	
 	public static Job pollUntilJobCompleted(Genomics genomics, String jobId, SequenceFileRepository repository,
 			SequenceFile file) throws IOException {
 		// now continue to poll until the job completes

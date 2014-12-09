@@ -48,7 +48,13 @@ public class VariantsController {
 		//get variant set
 		VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
 		data.put("variantSetId", variantSet.getId());
-		data.put("variantSetReferenceName", getReferenceName(variantSet.getReferenceBounds()));
+		data.put("variantSetReferenceBounds", variantSet.getReferenceBounds());
+		
+		//use the default reference name
+		if(referenceName == null || referenceName.isEmpty()) {
+			referenceName = getFirstReferenceName(variantSet.getReferenceBounds());
+		}
+		data.put("variantSetReferenceName", referenceName);
 		
 		//get variants
 		SearchVariantsRequest req = new SearchVariantsRequest()
@@ -69,7 +75,7 @@ public class VariantsController {
 		return data;
 	}
 	
-	private String getReferenceName(List<ReferenceBound> referenceBounds) {
+	private String getFirstReferenceName(List<ReferenceBound> referenceBounds) {
 		String referenceName = "";
 		if(referenceBounds != null && referenceBounds.size() > 0) {
 			referenceName = referenceBounds.get(0).getReferenceName();

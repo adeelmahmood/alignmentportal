@@ -30,10 +30,12 @@ public class JobProcessorImpl implements JobProcessor {
 
 	@Async
 	public void processJobForFiles(List<SequenceFile> files, Class<? extends Job> job) {
+		for(SequenceFile file : files) {
+			System.out.println("Received file " + file);
+		}
 		try {
 			Job jobBean = context.getBean(job);
 			for (SequenceFile file : files) {
-				log.debug("starting job [" + jobBean.getName() + "] on file " + file.toStringMin());
 				// set in progress status
 				file.setStatus(SequenceFileStatus.fromStatus(jobBean.getInProgressStatus()));
 				// set job as owner of this file
@@ -57,6 +59,8 @@ public class JobProcessorImpl implements JobProcessor {
 			}
 		} catch (BeansException e) {
 			log.error("error in getting job bean", e);
+		} catch (Exception e) {
+			log.error("unexpected error", e);
 		}
 	}
 }

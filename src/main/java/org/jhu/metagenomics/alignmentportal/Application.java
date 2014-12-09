@@ -6,6 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.MultipartConfigElement;
@@ -26,10 +29,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.extensions.java6.auth.oauth2.GooglePromptReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.apache.ApacheHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -38,7 +39,6 @@ import com.google.api.services.bigquery.Bigquery;
 import com.google.api.services.genomics.Genomics;
 import com.google.api.services.storage.Storage;
 import com.google.cloud.genomics.utils.GenomicsFactory;
-import com.google.common.base.Suppliers;
 
 @Configuration
 @EnableAutoConfiguration
@@ -53,6 +53,12 @@ public class Application {
 		SpringApplication.run(Application.class, args);
 	}
 
+	@Value("${google.genomics.service.account.file}")
+	private String serviceAccountFile;
+	
+	@Value("${google.genomics.service.account.email}")
+	private String serviceAccountEmail;
+	
 	@Value("${client.secrets.file:client_secrets.json}")
 	private String clientSecretsFile;
 
@@ -63,10 +69,11 @@ public class Application {
 	public Genomics genomics() throws IOException, GeneralSecurityException {
 		GenomicsFactory factory = GenomicsFactory.builder(Constants.APP_NAME).setScopes(GenomicsUtils.getScopes())
 				.setUserName("user" + GenomicsUtils.getScopes().toString())
-				 .setVerificationCodeReceiver(Suppliers.ofInstance(new GooglePromptReceiver()))
+				// .setVerificationCodeReceiver(Suppliers.ofInstance(newGooglePromptReceiver()))
 				.setRootUrl(Constants.GENOMICS_ROOT_URL).setServicePath("/").build();
 		// return factory.fromApiKey(apiKey);
-		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
+		return factory.fromServiceAccount(serviceAccountEmail, AppUtils.loadFile(serviceAccountFile));
+//		return factory.fromClientSecretsFile(AppUtils.loadFile(clientSecretsFile));
 	}
 
 	@Bean
@@ -102,6 +109,17 @@ public class Application {
 				new FileInputStream(AppUtils.loadFile(clientSecretsFile))));
 		return clientSecrets;
 	}
+	
+	@Bean
+	public GoogleCredential googleCredential() throws GeneralSecurityException, IOException {
+		GoogleCredential credentials = new GoogleCredential.Builder().setTransport(httpTransport())
+			    .setJsonFactory(jacksonFactory())
+			    .setServiceAccountId(serviceAccountEmail)
+			    .setServiceAccountScopes(GenomicsUtils.getAllScopes())
+			    .setServiceAccountPrivateKeyFromP12File(AppUtils.loadFile(serviceAccountFile))
+			    .build();
+		return credentials;
+	}
 
 	@Bean
 	public Bigquery bigQuery() throws FileNotFoundException, IOException, GeneralSecurityException {
@@ -119,9 +137,10 @@ public class Application {
 
 	private Credential getCredentials(GoogleClientSecrets clientSecrets, Set<String> scopes) throws IOException,
 			GeneralSecurityException {
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport(), jacksonFactory(),
-				clientSecrets, scopes).setDataStoreFactory(dataStoreFactory()).build();
-		// Authorize.
-		return new AuthorizationCodeInstalledApp(flow, new GooglePromptReceiver()).authorize("user" + scopes.toString());
+//		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport(), jacksonFactory(),
+//				clientSecrets, scopes).setDataStoreFactory(dataStoreFactory()).build();
+//		// Authorize.
+//		return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user" + scopes.toString());
+		return googleCredential();
 	}
 }

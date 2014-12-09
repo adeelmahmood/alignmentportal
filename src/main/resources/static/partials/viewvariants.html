@@ -3,10 +3,13 @@
 		<div class="col-md-12">
 			<div class="pagehead">
 				<div class="pull-right">
-					<a href="/#variantsets" class="btn btn-default">Back To Variant Sets</a>
+					<a href="/#variantsets" class="btn btn-default">Back To Variant
+						Sets</a> <a href="http://samtools.github.io/hts-specs/VCFv4.2.pdf"
+						target="_blank" class="btn btn-success">Format Specifications</a>
 				</div>
 				<h1>
-					Variants <small>for {{variantSetData.variantSetReferenceName}}</small>
+					Variants <small>for
+						{{variantSetData.variantSetReferenceName}}</small>
 				</h1>
 
 			</div>
@@ -26,30 +29,30 @@
 								placeholder="End Position" ng-model="endPosition">
 						</div>
 						<div class="form-group">
-							<input type="text" class="form-control"
-								placeholder="Reference Name" ng-model="referenceName"
-								data-toggle="tooltip" data-placement="bottom"
-								title="Search for alignments for a given reference name e.g. chr1 or gi|9626243|ref|NC_001416.1|">
+							<select class="form-control" ng-model="referenceNameObj"
+								ng-options="value.referenceName for value in variantSetData.variantSetReferenceBounds"
+								data-toggle="tip" data-placement="bottom"
+								title="Search for alignments for a given reference name e.g. chr1 or gi|9626243|ref|NC_001416.1|"></select>
 						</div>
 						<button type="button" class="btn btn-default" ng-click="search()"
-							ng-disabled="!startPosition || !endPosition || !referenceName">
+							ng-disabled="!startPosition || !endPosition || !referenceNameObj">
 							<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-							Search Alignments
+							Search Variants
 						</button>
 						<button type="button" class="btn btn-default" ng-click="clear()"
-							ng-disabled="!startPosition && !endPosition && !referenceName">
+							ng-disabled="!startPosition && !endPosition && !referenceNameObj">
 							Clear</button>
 					</form>
 					<form class="navbar-form navbar-right">
-						<button ng-show="readGroupSetData.previousPageToken"
+						<button ng-show="variantSetData.previousPageToken"
 							ng-click="first()" class="btn btn-default">
 							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-							Back to First Page
+							First Page
 						</button>
-						<button ng-show="readGroupSetData.nextPageToken" ng-click="next()"
+						<button ng-show="variantSetData.nextPageToken" ng-click="next()"
 							class="btn btn-default">
-							Next Set of Reads <span class="glyphicon glyphicon-chevron-right"
-								aria-hidden="true"></span>
+							Next Set of Variants <span
+								class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 						</button>
 						&nbsp;
 					</form>
@@ -57,25 +60,23 @@
 			</nav>
 			<table class="table table-bordered">
 				<tr>
-					<th>Reference Name</th>
-					<th>Fragment</th>
-					<th>Strand</th>
-					<th>Position</th>
-					<th>Length</th>
-					<th>Quality</th>
-					<th>Aligned Sequence & Quality Score</th>
+					<th>Start Postion</th>
+					<th>End Position</th>
+					<th>Reference Bases</th>
+					<th>Alternate Bases</th>
 					<th>Tags</th>
+					<th>Quality</th>
 				</tr>
 				<tbody>
-					<tr ng-repeat="read in readGroupSetData.reads">
-						<td>{{read.alignment.position.referenceName}}</td>
-						<td>{{read.fragmentName}}</td>
-						<td>{{getStrand(read.alignment.position.reverseStrand)}}</td>
-						<td>{{read.alignment.position.position}}</td>
-						<td>{{read.alignment.cigar[0].operationLength}}</td>
-						<td>{{read.alignment.mappingQuality}}</td>
-						<td><span ng-bind-html="renderSequence(read) | unsafe"></span></td>
-						<td><span ng-bind-html="renderTags(read) | unsafe"></span></td>
+					<tr ng-repeat="variant in variantSetData.variants">
+						<td>{{variant.start}}</td>
+						<td>{{variant.end}}</td>
+						<td><div
+								ng-bind-html="renderBases(variant.referenceBases) | unsafe"></div></td>
+						<td><div
+								ng-bind-html="renderBases(variant.alternateBases) | unsafe"></div></td>
+						<td><div ng-bind-html="renderInfo(variant.info) | unsafe"></div></td>
+						<td>{{variant.quality}}</td>
 					</tr>
 				</tbody>
 			</table>

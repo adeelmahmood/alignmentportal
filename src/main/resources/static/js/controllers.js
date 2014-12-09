@@ -95,7 +95,7 @@ alignmentportal
 				str += "<a href='/#/reads/" + val + "' class='btn btn-primary btn-sm'>Explore Reads</a>";
 			}
 			else if(key == "apds") {
-				str += "<a href class='btn btn-primary btn-sm'>Explore Variants</a>";
+				str += "<a href='/#/variants/" + val.split("_")[0] + "' class='btn btn-primary btn-sm'>Explore Variants</a>";
 			}
 		}
 		return str ? str : info;
@@ -346,37 +346,75 @@ alignmentportal
 })
 .controller('ViewVariantsController', function($scope, $location, $resource, $routeParams) {
 	$scope.variantSetData = {};
+	$scope.firstTime = true;
 	$scope.variantsList = $resource('/variants/list/:variantSetId', {isArray:false});
-	$scope.refreshReads = function() {
+	$scope.refreshVariants = function() {
 		$scope.variantsList.get({
 					variantSetId: $routeParams.variantSetId,
 					start: $scope.startPosition,
 					end: $scope.endPosition,
-//					referenceName: $scope.referenceName,
+					referenceName: $scope.referenceNameObj ? $scope.referenceNameObj.referenceName : null,
 					nextPageToken: $scope.variantSetData.nextPageToken
-				}, function(data) { $scope.variantSetData = data; },
+				}, function(data) { 
+					$scope.variantSetData = data;
+					$scope.referenceNameObj = $scope.findInArr($scope.variantSetData.variantSetReferenceBounds, 
+							"referenceName", $scope.variantSetData.variantSetReferenceName);
+				},
 				function(err){ alert(err.data.error + "\n" + err.data.message); });	
 	};
-	$scope.refreshReads();
+	$scope.refreshVariants();
+	
+	$scope.findInArr = function(arr, key, val) {
+		for(var k in arr) {
+			if(arr[k][key] == val) {
+				return arr[k];
+			}
+		}
+		return null;
+	};
+	
+	$scope.renderBases = function(bases) {
+		if(typeof bases == 'string') {
+			return bases;
+		}
+		else if(typeof bases == 'object') {
+			var str = [];
+			for(base in bases) {
+				str.push(bases[base]);
+			}
+			return str.join("<br/>");
+		} 
+	};
+	
+	$scope.renderInfo = function(info) {
+		var str = "";
+		for(tag in info) {
+			var vals = info[tag].join(",");
+			if(vals) {
+				str += "<span class='text-primary'>" + tag + "</span> <span class='text-muted'>: " + info[tag].join(",") + "</span><br/>";
+			}
+		}
+		return str;
+	};
 	
 	$scope.next = function() {
-		$scope.refreshReads();
+		$scope.refreshVariants();
 	};
 	$scope.first = function() {
 		$scope.variantSetData.nextPageToken = null;
 		$scope.variantSetData.previousPageToken = null;
-		$scope.refreshReads();
+		$scope.refreshVariants();
 	};
 	$scope.search = function() {
 		$scope.variantSetData.nextPageToken = "";
-		$scope.refreshReads();
+		$scope.refreshVariants();
 	};
 	$scope.clear = function() {
 		$scope.startPosition = "";
 		$scope.endPosition = "";
-		$scope.referenceName = "";
 		$scope.variantSetData.nextPageToken = "";
-		$scope.refreshReads();
+		$scope.referenceName = {};
+		$scope.refreshVariants();
 	};
 	
 	$('[data-toggle="tooltip"]').tooltip();

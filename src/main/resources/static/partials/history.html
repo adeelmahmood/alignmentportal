@@ -30,7 +30,7 @@
 							<th></th>
 						</tr>
 						<tbody>
-							<tr ng-repeat="job in dataset.jobs">
+							<tr ng-repeat="job in dataset.jobs" ng-class="{info : job.status == 'EXPORT_TO_BIG_QUERY_COMPLETED' || job.status == 'IMPORT_READS_COMPLETED'}">
 								<td>{{job.name}}</td>
 								<td>{{job.status}}</td>
 								<td>{{job.type}}</td>
