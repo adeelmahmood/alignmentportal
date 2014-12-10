@@ -32,6 +32,9 @@ public class VariantsController {
 	@Value("${google.bigquery.dataset}")
 	private String bigqueryDataset;
 	
+	@Value("${import.to.bigquery.enabled:false}")
+	private boolean importToBigQuery;
+
 	private final Genomics genomics;
 
 	@Autowired
@@ -52,6 +55,7 @@ public class VariantsController {
 		VariantSet variantSet = genomics.variantsets().get(variantSetId).execute();
 		data.put("variantSetId", variantSet.getId());
 		data.put("variantSetReferenceBounds", variantSet.getReferenceBounds());
+		data.put("importToBigQuery", importToBigQuery);
 		data.put("bigquerytable", bigqueryDataset + "." + variantSet.getId());
 		
 		//use the default reference name

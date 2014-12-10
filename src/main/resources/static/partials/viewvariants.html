@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
-			<p class="lead well" ng-hide="hideBanner">
+			<p class="lead well" ng-hide="hideBanner || !variantSetData.importToBigQuery">
 				Note: For futher exploration of these variants or complex queries <a
 					href="https://bigquery.cloud.google.com/table/mg-alignment-portal:{{variantSetData.bigquerytable}}?pli=1"
 					class='btn btn-primary'>Go to Google Big Query</a>
