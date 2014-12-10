@@ -48,7 +48,7 @@ public class GenomicsUtils {
 		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
 		return scopes;
 	}
-	
+
 	public static Set<String> getAllScopes() {
 		Set<String> scopes = new HashSet<String>();
 		scopes.add(BigqueryScopes.BIGQUERY);
@@ -57,7 +57,7 @@ public class GenomicsUtils {
 		scopes.add(StorageScopes.DEVSTORAGE_READ_WRITE);
 		return scopes;
 	}
-	
+
 	public static Job pollUntilJobCompleted(Genomics genomics, String jobId, SequenceFileRepository repository,
 			SequenceFile file) throws IOException {
 		// now continue to poll until the job completes
@@ -102,5 +102,4 @@ public class GenomicsUtils {
 		return (job.getDetailedStatus() != null && !job.getDetailedStatus().isEmpty()) ? job.getDetailedStatus()
 				: "Job status " + job.getStatus();
 	}
-
 }
