@@ -66,6 +66,12 @@ alignmentportal
 			$scope.toggleRefreshCls = "danger";
 		}
 	};
+	$scope.$on('$destroy', function() {
+		if(angular.isDefined($scope.refreshInterval)) {
+			$interval.cancel($scope.refreshInterval);
+			$scope.refreshInterval = undefined;
+		}
+	});
 	
 	$scope.downloadCall = $resource('/download', {}, {
 		doIt: {method: 'POST', isArray: false, params: {file:'@file'}}
@@ -103,6 +109,8 @@ alignmentportal
 		}
 		return str ? str : info;
 	};
+	
+	$('[data-toggle="tooltip"]').tooltip();
 })
 .controller('DatasetsController', function($scope, $location, $resource, $routeParams) {
 	$scope.dataset = {};
