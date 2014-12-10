@@ -1,4 +1,4 @@
-var alignmentportal = angular.module('alignmentportal', ['ngResource', 'ngRoute', 'angularFileUpload']);
+var alignmentportal = angular.module('alignmentportal', ['ngResource', 'ngRoute', 'angularFileUpload', 'angular-loading-bar']);
 
 alignmentportal.config(function($routeProvider) {
 	

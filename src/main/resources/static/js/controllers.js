@@ -86,7 +86,7 @@ alignmentportal
 	
 	$scope.renderJobInfo = function(info) {
 		var str = "";
-		var matches = info.match(/([^\{].*)\{([^\:].*):([^\}].*)\}/);
+		var matches = info ? info.match(/([^\{].*)\{([^\:].*):([^\}].*)\}/) : null;
 		if(matches != null && matches.length > 0) {
 			var orig = matches[1];
 			var key = matches[2];
