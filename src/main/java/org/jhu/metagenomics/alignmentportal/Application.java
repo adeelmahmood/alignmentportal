@@ -50,7 +50,6 @@ import com.google.cloud.genomics.utils.GenomicsFactory;
 public class Application {
 
 	public static void main(String[] args) {
-		System.out.println(System.getProperty("os.name"));
 		SpringApplication.run(Application.class, args);
 	}
 
@@ -60,10 +59,10 @@ public class Application {
 	@Value("${google.genomics.service.account.email}")
 	private String serviceAccountEmail;
 
-	@Value("${client.secrets.file:client_secrets.json}")
+	@Value("${client.secrets.file}")
 	private String clientSecretsFile;
 
-	@Value("${google.api.key:}")
+	@Value("${google.api.key}")
 	private String apiKey;
 
 	@Value("${import.to.bigquery.enabled:false}")

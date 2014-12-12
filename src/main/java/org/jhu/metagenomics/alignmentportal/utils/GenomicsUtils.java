@@ -38,6 +38,7 @@ public class GenomicsUtils {
 	public static Set<String> getBigqueryScopes() {
 		Set<String> scopes = new HashSet<String>();
 		scopes.add(BigqueryScopes.BIGQUERY);
+		scopes.add(BigqueryScopes.BIGQUERY_INSERTDATA);
 		return scopes;
 	}
 
